@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @since : 4/12/2023, Wed
  **/
 public interface AccountRepo extends JpaRepository<Account, String> {
+
+    boolean existsByUsername(String username);
 }

@@ -1,5 +1,6 @@
 package la.com.unitel.service.imp;
 
+import la.com.unitel.entity.account.District;
 import la.com.unitel.repository.ContractTypeRepo;
 import la.com.unitel.repository.DistrictRepo;
 import la.com.unitel.service.ContractTypeService;
@@ -15,4 +16,14 @@ import org.springframework.stereotype.Service;
 public class DistrictServiceImp implements DistrictService {
     @Autowired
     private DistrictRepo districtRepo;
+
+    @Override
+    public District findById(String id) {
+        return districtRepo.findById(id).orElse(null);
+    }
+
+    @Override
+    public boolean existsById(String id) {
+        return districtRepo.existsById(id);
+    }
 }

@@ -10,7 +10,6 @@ public interface Util {
     String normalizeIsdn(String isdn);
     String toIsdn(String number);
     String toMsisdn(String number);
-    boolean isMytelNumber(String number);
     String localDateTimeToString(LocalDateTime dateTime);
     LocalDateTime stringToLocalDateTime (String timeString);
     CharSequence standardizeDateString(String dateString);

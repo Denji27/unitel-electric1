@@ -3,10 +3,9 @@ package la.com.unitel.business;
 import la.com.unitel.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.UserProfileResource;
-import org.keycloak.admin.client.resource.UserResource;
-import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.admin.client.resource.*;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.MappingsRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.core.env.Environment;
@@ -29,46 +28,53 @@ public class KeycloakUtil {
     private final Keycloak keycloak;
     private final String realm;
     private final Util util;
+    private final Environment environment;
     private final String clientId;
 
     public KeycloakUtil(Environment environment, Keycloak keycloak, Util util) {
         this.keycloak = keycloak;
-        this.realm = environment.getProperty("keycloak.realm");
-//        this.clientName = environment.getProperty("keycloak.resource");
-        this.clientId = keycloak.realm(realm).clients().findByClientId(environment.getProperty("keycloak.resource")).get(0).getId();
+        this.environment = environment;
         this.util = util;
+        this.realm = environment.getProperty("keycloak.realm");
+        this.clientId = keycloak.realm(realm).clients().findByClientId(environment.getProperty("keycloak.resource")).get(0).getId();
+        log.info("Client id: {}", this.clientId);
     }
 
-    private CredentialRepresentation createPasswordCredentials(String password) {
-        CredentialRepresentation passwordCredentials = new CredentialRepresentation();
-        passwordCredentials.setTemporary(false);
-        passwordCredentials.setType(CredentialRepresentation.PASSWORD);
-        passwordCredentials.setValue(password);
-        return passwordCredentials;
-    }
 
-    private boolean addRole(String username, String roleName) {
+    private boolean addRole(String userId, List<String> roleList) {
         try {
-            log.info("Add role {} for username {}", roleName, username);
-            UserResource user = keycloak.realm(realm).users().get(keycloak.realm(realm).users().search(username).get(0).getId());
+            log.info("Add role {} for user id {}", Arrays.toString(roleList.toArray()), userId);
+            UserResource user = keycloak.realm(realm).users().get(userId);
+
+            List<RoleRepresentation> roleToRemove = keycloak.realm(realm).users().get(userId).roles().getAll().getClientMappings()
+                    .get(environment.getProperty("keycloak.resource"))
+                    .getMappings();
+            user.roles().clientLevel(clientId).remove(roleToRemove);
 
             List<RoleRepresentation> roleToAdd = new LinkedList<>();
-            roleToAdd.add(keycloak.realm(realm).clients().get(clientId).roles().get(roleName).toRepresentation());
+            RolesResource rolesResource = keycloak.realm(realm).clients().get(clientId).roles();
+            for (String roleName : roleList) {
+                roleToAdd.add(rolesResource.get(roleName).toRepresentation());
+            }
 
             user.roles().clientLevel(clientId).add(roleToAdd);
             return true;
         } catch (Exception e) {
-            log.error("Error when add role {} for username {}", roleName, username);
+            log.error("Error when add role {} for user id {}", Arrays.toString(roleList.toArray()), userId);
             log.error("Due to: ", e);
             return false;
         }
     }
 
-    public UserRepresentation createUser(String username, String password, String roleName) {
-        return this.createUser(username, password, roleName, null);
+    public UserRepresentation createUser(String username, String password, List<String> roleList) {
+        return this.createUser(username, password, roleList, null, null);
     }
 
-    public UserRepresentation createUser(String username, String password, String roleName, String phoneNumber) {
+    public UserRepresentation createUser(String username, String password, List<String> roleList, String phoneNumber) {
+        return this.createUser(username, password, roleList, phoneNumber, null);
+    }
+
+    public UserRepresentation createUser(String username, String password, List<String> roleList, String phoneNumber, String district) {
         UsersResource usersResource = keycloak.realm(realm).users();
 
         CredentialRepresentation credentialRepresentation = createPasswordCredentials(password);
@@ -79,26 +85,21 @@ public class KeycloakUtil {
         newUser.setEnabled(true);
         newUser.setEmailVerified(false);
 
+        HashMap<String, List<String>> map = new HashMap<>();
+
         if (phoneNumber != null) {
 //            add attribute
-            HashMap<String, List<String>> map = new HashMap<>();
             map.put("phoneNumber", new ArrayList<>() {{
                 add(phoneNumber);
             }});
-            newUser.setAttributes(map);
+        }
+        if (district != null) {
+            map.put("district", new ArrayList<>() {{
+                add(district);
+            }});
         }
 
-/*//        attribute
-        HashMap<String, List<String>> map = new HashMap<>();
-        List<String> companyCode = new ArrayList<>();
-        companyCode.add(company.getCode());
-        List<String> adminSim = new ArrayList<>();
-        adminSim.add(company.getAdminSim());
-
-        map.put("companyCode",companyCode);
-        map.put("adminSim",adminSim);
-        map.put("mobile_number",adminSim);
-        newUser.setAttributes(map);*/
+        newUser.setAttributes(map);
 
         log.info(">>>[KEYCLOAK] create user request: {}", util.toJson(newUser));
         try {
@@ -106,9 +107,13 @@ public class KeycloakUtil {
             log.info("<<<[KEYCLOAK] create user response: {}, family {}", response.getStatusInfo().getReasonPhrase(), response.getStatusInfo().getFamily());
             log.info("Create User Response Status : {}", response.getStatus());
             if (response.getStatus() == 201) {
-                List<UserRepresentation> search = keycloak.realm(realm).users().search(newUser.getUsername());
-                newUser.setId(search.get(0).getId());
-                if (!addRole(newUser.getUsername(), roleName)) {
+                UserRepresentation userRepre = findByUsername(newUser.getUsername());
+                if (userRepre == null) {
+                    log.error("Username {} created, but now not found. Unexpected Error", newUser.getUsername());
+                    return null;
+                }
+                newUser.setId(userRepre.getId());
+                if (!addRole(newUser.getId(), roleList)) {
                     Response deleteUserResponse = usersResource.delete(newUser.getId());
                     log.info("<<<[KEYCLOAK] delete user response: {}", deleteUserResponse.getStatusInfo().getReasonPhrase());
                     log.info("Delete User Response Status : {}", deleteUserResponse.getStatus());
@@ -131,9 +136,83 @@ public class KeycloakUtil {
         return null;
     }
 
+    public boolean updateUser(String userId, String newPassword) {
+        return this.updateUser(userId, newPassword, null, null);
+    }
+
+    public boolean updateUser(String userId, String newPassword, String phoneNumber, String district) {
+        UserResource userResource = keycloak.realm(realm).users().get(userId);
+        UserRepresentation userRepresentation = userResource.toRepresentation();
+
+        if (newPassword != null) {
+            CredentialRepresentation credentialRepresentation = createPasswordCredentials(newPassword);
+            userRepresentation.setCredentials(Collections.singletonList(credentialRepresentation));
+        }
+
+        HashMap<String, List<String>> map = new HashMap<>();
+        if (phoneNumber != null) {
+//            add attribute
+            map.put("phoneNumber", new ArrayList<>() {{
+                add(phoneNumber);
+            }});
+        }
+        if (district != null) {
+            map.put("district", new ArrayList<>() {{
+                add(district);
+            }});
+        }
+
+        userRepresentation.setAttributes(map);
+
+        try {
+            userResource.update(userRepresentation);
+            return true;
+        } catch (HttpStatusCodeException exception) {
+            log.error("Response of calling API in not 200 status code of update keycloak user id " + userId + " is " +
+                    ResponseEntity.status(exception.getRawStatusCode()).body(exception.getResponseBodyAsString()));
+        } catch (RestClientException ce) {
+            log.error("Rest Client Exception - Timeout");
+            log.error("", ce);
+        } catch (Exception e) {
+            log.error("Exception in user creation in Keycloak: ", e);
+        }
+        return false;
+    }
+
+    public boolean updateRoleUser(String userId, List<String> roleList) {
+        return addRole(userId, roleList);
+    }
+
     public UserRepresentation getUserProfile(String id) {
         return keycloak.realm(realm).users().get(id).toRepresentation();
     }
+
+    public UserRepresentation findByUsername(String username){
+        return keycloak.realm(realm).users().search(username).parallelStream()
+                .filter(userRepre -> userRepre.getUsername().equals(username)).findFirst().orElse(null);
+    }
+
+    public MappingsRepresentation findUserRoles(String userId){
+        return keycloak.realm(realm).users().get(userId).roles().getAll();
+    }
+
+    /*public void resetUserPassword(String userId, String newPassword) {
+        UserResource userResource = keycloak.realm(realm).users().get(userId);
+        CredentialRepresentation newCredential = new CredentialRepresentation();
+        newCredential.setType(CredentialRepresentation.PASSWORD);
+        newCredential.setValue(newPassword);
+        newCredential.setTemporary(false);
+        userResource.resetPassword(newCredential);
+    }*/
+
+    private CredentialRepresentation createPasswordCredentials(String password) {
+        CredentialRepresentation passwordCredentials = new CredentialRepresentation();
+        passwordCredentials.setTemporary(false);
+        passwordCredentials.setType(CredentialRepresentation.PASSWORD);
+        passwordCredentials.setValue(password);
+        return passwordCredentials;
+    }
+
 
     /*public Response deleteUser(String id) {
         return keycloak.realm(realm).users().delete(id);

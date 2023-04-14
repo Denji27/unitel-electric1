@@ -41,6 +41,7 @@ public class Account implements Serializable {
     private String address;
     private String remark;
     private String createdBy;
+    private String updatedBy;
     private Boolean isActive;
 
     @CreationTimestamp

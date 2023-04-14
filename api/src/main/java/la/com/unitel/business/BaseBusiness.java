@@ -2,6 +2,8 @@ package la.com.unitel.business;
 
 import la.com.unitel.Util;
 import la.com.unitel.service.AccountService;
+import la.com.unitel.service.DistrictService;
+import la.com.unitel.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -13,8 +15,12 @@ public class BaseBusiness {
     public Util util;
     @Autowired
     public AccountService accountService;
+    @Autowired
+    public RoleService roleService;
+    @Autowired
+    public DistrictService districtService;
 
-    public CommonResponse generateSuccessResponse(String requestId, Object result, Object... objects) {
+    public CommonResponse generateSuccessResponse(String requestId, Object result) {
         CommonResponse commonResponse = new CommonResponse("00000", "Success", result);
         commonResponse.setRequestId(requestId);
         return commonResponse;

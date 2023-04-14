@@ -12,7 +12,7 @@ public class ErrorCode {
     public static String TRANSACTION_INVALID = "002";
     public static String PHONE_NUMBER_INVALID = "003";
     public static String CURRENCY_INVALID = "004";
-    public static String ACCOUNT_NO_INVALID = "006";
+    public static String ACCOUNT_INVALID = "006";
     public static String REQUEST_ID_INVALID = "007";
     public static String DATE_OF_BIRTH_INVALID = "008";
     public static String CONTENT_INVALID = "009";
@@ -26,4 +26,10 @@ public class ErrorCode {
     public static String PAPER_TYPE_INVALID = "017";
     public static String LANGUAGE_INVALID = "018";
     public static String INPUT_INVALID = "019";
+    public static String USERNAME_EXISTED = "020";
+    public static String ROLE_INVALID = "021";
+    public static String DISTRICT_INVALID = "022";
+    public static String KEYCLOAK_CREATE_FAILED = "023";
+    public static String KEYCLOAK_UPDATE_FAILED = "024";
+    public static String KEYCLOAK_USER_NOT_FOUND = "025";
 }

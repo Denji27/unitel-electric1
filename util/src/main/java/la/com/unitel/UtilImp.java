@@ -99,19 +99,6 @@ public class UtilImp implements Util {
     }
 
     @Override
-    public boolean isMytelNumber(String number) {
-        String isdn = toIsdn(number);
-        if (isdn.startsWith("965") ||
-                isdn.startsWith("966") ||
-                isdn.startsWith("967") ||
-                isdn.startsWith("968") ||
-                isdn.startsWith("969")
-        ) {
-            return true;
-        } else return false;
-    }
-
-    @Override
     public String toJson(Object object) {
 //        ObjectMapper ow = new ObjectMapper();
         String json;

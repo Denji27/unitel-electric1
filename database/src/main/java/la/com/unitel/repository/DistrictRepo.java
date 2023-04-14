@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @since : 4/12/2023, Wed
  **/
 public interface DistrictRepo extends JpaRepository<District, String> {
+    boolean existsById(String id);
 }
