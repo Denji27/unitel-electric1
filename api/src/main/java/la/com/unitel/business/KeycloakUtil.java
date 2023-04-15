@@ -4,10 +4,7 @@ import la.com.unitel.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.*;
-import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.MappingsRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.representations.idm.*;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,14 +27,16 @@ public class KeycloakUtil {
     private final Util util;
     private final Environment environment;
     private final String clientId;
+    private final String clientName;
 
     public KeycloakUtil(Environment environment, Keycloak keycloak, Util util) {
         this.keycloak = keycloak;
         this.environment = environment;
         this.util = util;
         this.realm = environment.getProperty("keycloak.realm");
-        this.clientId = keycloak.realm(realm).clients().findByClientId(environment.getProperty("keycloak.resource")).get(0).getId();
-        log.info("Client id: {}", this.clientId);
+        this.clientName = environment.getProperty("keycloak.resource");
+        this.clientId = keycloak.realm(realm).clients().findByClientId(this.clientName).get(0).getId();
+        log.info("Client id: {}, client name: {}", this.clientId, this.clientName);
     }
 
 
@@ -46,10 +45,9 @@ public class KeycloakUtil {
             log.info("Add role {} for user id {}", Arrays.toString(roleList.toArray()), userId);
             UserResource user = keycloak.realm(realm).users().get(userId);
 
-            List<RoleRepresentation> roleToRemove = keycloak.realm(realm).users().get(userId).roles().getAll().getClientMappings()
-                    .get(environment.getProperty("keycloak.resource"))
-                    .getMappings();
+            List<RoleRepresentation> roleToRemove = keycloak.realm(realm).users().get(userId).roles().clientLevel(this.clientId).listAll();
             user.roles().clientLevel(clientId).remove(roleToRemove);
+            log.info("List role removed: {}", Arrays.toString(roleToRemove.toArray()));
 
             List<RoleRepresentation> roleToAdd = new LinkedList<>();
             RolesResource rolesResource = keycloak.realm(realm).clients().get(clientId).roles();

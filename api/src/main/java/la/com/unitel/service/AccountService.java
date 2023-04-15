@@ -14,4 +14,6 @@ public interface AccountService {
     boolean existsByUsername(String username);
     Account save(Account account);
     Account findById(String id);
+
+    <T> List<T> findAccountDetail(String input, Class<T> type);
 }

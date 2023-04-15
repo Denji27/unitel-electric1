@@ -4,26 +4,26 @@ import la.com.unitel.business.BaseBusiness;
 import la.com.unitel.business.CommonResponse;
 import la.com.unitel.business.KeycloakUtil;
 import la.com.unitel.business.Translator;
+import la.com.unitel.business.account.dto.AccountDetail;
 import la.com.unitel.business.account.dto.CreateAccountRequest;
 import la.com.unitel.business.account.dto.UpdateAccountRequest;
+import la.com.unitel.business.account.view.AccountDetailView;
 import la.com.unitel.entity.account.*;
 import la.com.unitel.entity.constant.Gender;
 import la.com.unitel.exception.ErrorCode;
 import la.com.unitel.exception.ErrorCommon;
-import la.com.unitel.exception.validation.GenderRegex;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import java.awt.print.Pageable;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -104,10 +104,11 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
             throw new ErrorCommon(ErrorCode.KEYCLOAK_UPDATE_FAILED, Translator.toLocale(ErrorCode.KEYCLOAK_UPDATE_FAILED));
 
         List<RoleAccount> roleAccountList = roleService.findByIdAccountId(accountId);
-        String newUpdateRole = updateAccountRequest.getRoleList().parallelStream()
-                .filter(role -> !roleAccountList.parallelStream().map(roleAccount -> roleAccount.getId().getRoleCode()).collect(Collectors.toSet()).contains(role))
-                .findFirst().orElse(null);
-        if (newUpdateRole == null) {
+        Set<String> currentRoleSet = roleAccountList.parallelStream().map(roleAccount -> roleAccount.getId().getRoleCode()).collect(Collectors.toSet());
+        Set<String> updateRoleSet = new HashSet<>(updateAccountRequest.getRoleList());
+
+        boolean hasNewRole = updateRoleSet.parallelStream().anyMatch(role -> !currentRoleSet.contains(role));
+        if (!hasNewRole && (currentRoleSet.size() == updateRoleSet.size())) {
             log.info("Role not change");
         } else {
             boolean isRoleUpdated = keycloakUtil.updateRoleUser(keycloakUser.getId(), updateAccountRequest.getRoleList());
@@ -138,16 +139,26 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
 
     @Override
     public CommonResponse onChangeAccountStatus(String accountId) {
-        return null;
+        Account account = accountService.findById(accountId);
+        if (account == null)
+            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+
+        account.setIsActive(!account.getIsActive());
+        account = accountService.save(account);
+        return generateSuccessResponse(UUID.randomUUID().toString(), account);
     }
 
     @Override
     public CommonResponse onViewAccountDetail(String accountId) {
-        return null;
+        Account account = accountService.findById(accountId);
+        if (account == null)
+            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+        return generateSuccessResponse(UUID.randomUUID().toString(), account);
     }
 
     @Override
     public CommonResponse onSearchAccount(String input, Pageable pageable) {
-        return null;
+//        AccountDetail accountDetail = AccountDetail.generate(accountService.findAccountDetail(input, AccountDetailView.class));
+        return generateSuccessResponse(UUID.randomUUID().toString(), accountService.findAccountDetail(input, AccountDetailView.class));
     }
 }

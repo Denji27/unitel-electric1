@@ -44,7 +44,7 @@ public class Controller {
         Response response = keycloakUtil.deleteUser("31d51e24-5e85-4a15-a1f8-b464ed79dedd");
         log.info("Response: {}", response.toString());*/
 
-        MappingsRepresentation mappingsRepresentation = keycloakUtil.findUserRoles("21f96f66-9399-464a-8f05-59b6bb537497");
-        log.info("mappingsRepresentation: {}", util.toJsonPretty(mappingsRepresentation));
+        /*MappingsRepresentation mappingsRepresentation = keycloakUtil.findUserRoles("21f96f66-9399-464a-8f05-59b6bb537497");
+        log.info("mappingsRepresentation: {}", util.toJsonPretty(mappingsRepresentation));*/
     }
 }
