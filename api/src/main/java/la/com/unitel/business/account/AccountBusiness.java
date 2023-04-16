@@ -1,13 +1,12 @@
 package la.com.unitel.business.account;
 
-import la.com.unitel.business.BaseBusiness;
-import la.com.unitel.business.CommonResponse;
-import la.com.unitel.business.KeycloakUtil;
-import la.com.unitel.business.Translator;
+import la.com.unitel.business.*;
 import la.com.unitel.business.account.dto.AccountDetail;
 import la.com.unitel.business.account.dto.CreateAccountRequest;
 import la.com.unitel.business.account.dto.UpdateAccountRequest;
 import la.com.unitel.business.account.view.AccountDetailView;
+import la.com.unitel.business.contract.dto.ContractDetail;
+import la.com.unitel.business.contract.view.ContractDetailView;
 import la.com.unitel.entity.account.*;
 import la.com.unitel.entity.constant.Gender;
 import la.com.unitel.exception.ErrorCode;
@@ -15,6 +14,8 @@ import la.com.unitel.exception.ErrorCommon;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +44,7 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
             throw new ErrorCommon(ErrorCode.USERNAME_EXISTED, Translator.toLocale(ErrorCode.USERNAME_EXISTED));
 
         String invalidRole = createAccountRequest.getRoleList().parallelStream().filter(role -> !roleService.existsByCode(role)).findFirst().orElse(null);
-        if (invalidRole != null)
+        if (invalidRole != null || createAccountRequest.getRoleList().contains(Constant.ENDUSER))
             throw new ErrorCommon(ErrorCode.ROLE_INVALID, Translator.toLocale(ErrorCode.ROLE_INVALID));
 
         District district = districtService.findById(createAccountRequest.getDistrictId());
@@ -52,7 +53,7 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
 
 
         UserRepresentation keycloakUser = keycloakUtil.createUser(createAccountRequest.getUsername(), createAccountRequest.getPassword(), createAccountRequest.getRoleList(),
-                util.toMsisdn(createAccountRequest.getPhoneNumber()), district.getName());
+                util.toMsisdn(createAccountRequest.getPhoneNumber()), district.getName(), null);
         if (keycloakUser == null)
             throw new ErrorCommon(ErrorCode.KEYCLOAK_CREATE_FAILED, Translator.toLocale(ErrorCode.KEYCLOAK_CREATE_FAILED));
 
@@ -77,7 +78,7 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
             roleAccount = roleService.saveRoleAccount(roleAccount);
         }
 
-        return generateSuccessResponse(createAccountRequest.getRequestId(), account);
+        return generateSuccessResponse(createAccountRequest.getRequestId(), AccountDetail.generate(accountService.findAccountDetail(account.getId(), AccountDetailView.class)));
     }
 
     @Override
@@ -99,7 +100,7 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
         if (keycloakUser == null)
             throw new ErrorCommon(ErrorCode.KEYCLOAK_USER_NOT_FOUND, Translator.toLocale(ErrorCode.KEYCLOAK_USER_NOT_FOUND));
 
-        boolean isUserUpdated = keycloakUtil.updateUser(keycloakUser.getId(), updateAccountRequest.getPassword(), updateAccountRequest.getPhoneNumber(), district.getName());
+        boolean isUserUpdated = keycloakUtil.updateUser(keycloakUser.getId(), updateAccountRequest.getPassword(), updateAccountRequest.getPhoneNumber(), district.getName(), null);
         if (!isUserUpdated)
             throw new ErrorCommon(ErrorCode.KEYCLOAK_UPDATE_FAILED, Translator.toLocale(ErrorCode.KEYCLOAK_UPDATE_FAILED));
 
@@ -127,14 +128,14 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
         account.setPhoneNumber(util.toMsisdn(updateAccountRequest.getPhoneNumber()));
         account.setDistrictId(updateAccountRequest.getDistrictId());
         account.setGender(Gender.findByName(updateAccountRequest.getGender()));
-        account.setDepartment(updateAccountRequest.getDepartment());
-        account.setPosition(updateAccountRequest.getPosition());
-        account.setAddress(updateAccountRequest.getAddress());
-        account.setRemark(updateAccountRequest.getRemark());
+        if (updateAccountRequest.getDepartment() != null) account.setDepartment(updateAccountRequest.getDepartment());
+        if (updateAccountRequest.getPosition() != null) account.setPosition(updateAccountRequest.getPosition());
+        if (updateAccountRequest.getAddress() != null) account.setAddress(updateAccountRequest.getAddress());
+        if (updateAccountRequest.getRemark() != null) account.setRemark(updateAccountRequest.getRemark());
         account.setUpdatedBy(principal.getName());
         account = accountService.save(account);
 
-        return generateSuccessResponse(updateAccountRequest.getRequestId(), account);
+        return generateSuccessResponse(updateAccountRequest.getRequestId(), AccountDetail.generate(accountService.findAccountDetail(accountId, AccountDetailView.class)));
     }
 
     @Override
@@ -145,7 +146,7 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
 
         account.setIsActive(!account.getIsActive());
         account = accountService.save(account);
-        return generateSuccessResponse(UUID.randomUUID().toString(), account);
+        return generateSuccessResponse(UUID.randomUUID().toString(), AccountDetail.generate(accountService.findAccountDetail(accountId, AccountDetailView.class)));
     }
 
     @Override
@@ -153,12 +154,16 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
         Account account = accountService.findById(accountId);
         if (account == null)
             throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
-        return generateSuccessResponse(UUID.randomUUID().toString(), account);
+
+        AccountDetail result = AccountDetail.generate(accountService.findAccountDetail(accountId, AccountDetailView.class));
+        return generateSuccessResponse(UUID.randomUUID().toString(), result);
     }
 
     @Override
     public CommonResponse onSearchAccount(String input, Pageable pageable) {
-//        AccountDetail accountDetail = AccountDetail.generate(accountService.findAccountDetail(input, AccountDetailView.class));
-        return generateSuccessResponse(UUID.randomUUID().toString(), accountService.findAccountDetail(input, AccountDetailView.class));
+        Page<AccountDetailView> views = accountService.searchAccountDetail(input, AccountDetailView.class, pageable);
+        List<AccountDetail> collect = views.getContent().parallelStream().map(AccountDetail::generate).collect(Collectors.toList());
+        Page<AccountDetail> result = new PageImpl<>(collect, pageable, views.getTotalElements());
+        return generateSuccessResponse(UUID.randomUUID().toString(), result);
     }
 }

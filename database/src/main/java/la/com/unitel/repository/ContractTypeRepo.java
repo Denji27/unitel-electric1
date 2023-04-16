@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @since : 4/12/2023, Wed
  **/
 public interface ContractTypeRepo extends JpaRepository<ContractType, String> {
+
+    boolean existsByCode(String code);
 }

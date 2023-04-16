@@ -4,6 +4,8 @@ import la.com.unitel.entity.account.Account;
 import la.com.unitel.repository.AccountRepo;
 import la.com.unitel.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,7 +35,12 @@ public class AccountServiceImp implements AccountService {
     }
 
     @Override
-    public <T> List<T> findAccountDetail(String input, Class<T> type) {
-        return accountRepo.findAccountDetail(input, type);
+    public <T> Page<T> searchAccountDetail(String input, Class<T> type, Pageable pageable) {
+        return accountRepo.searchAccountDetail('%' + input + '%', type, pageable);
+    }
+
+    @Override
+    public <T> T findAccountDetail(String accountId, Class<T> type) {
+        return accountRepo.findAccountDetail(accountId, type);
     }
 }

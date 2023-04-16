@@ -32,4 +32,8 @@ public class ErrorCode {
     public static String KEYCLOAK_CREATE_FAILED = "023";
     public static String KEYCLOAK_UPDATE_FAILED = "024";
     public static String KEYCLOAK_USER_NOT_FOUND = "025";
+    public static String CONTRACT_TYPE_INVALID = "026";
+    public static String CONTRACT_INVALID = "027";
+    public static String DEVICE_EXISTED = "028";
+    public static String DEVICE_INVALID = "029";
 }

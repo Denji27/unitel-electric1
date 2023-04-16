@@ -28,7 +28,7 @@ public class MeterDevice implements Serializable {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String contractId;
     private String description;
     private String brand;
@@ -37,6 +37,7 @@ public class MeterDevice implements Serializable {
     private Integer maximumUnit;
     private String remark;
     private String createdBy;
+    private String updatedBy;
 
     @CreationTimestamp
     @JsonSerialize(using = LocalDateTimeSerializer.class)

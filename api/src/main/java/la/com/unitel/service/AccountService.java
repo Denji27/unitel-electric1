@@ -1,9 +1,10 @@
 package la.com.unitel.service;
 
 import la.com.unitel.entity.account.Account;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author : Tungct
@@ -14,6 +15,6 @@ public interface AccountService {
     boolean existsByUsername(String username);
     Account save(Account account);
     Account findById(String id);
-
-    <T> List<T> findAccountDetail(String input, Class<T> type);
+    <T> Page<T> searchAccountDetail(String input, Class<T> type, Pageable pageable);
+    <T> T findAccountDetail(String accountId, Class<T> type);
 }

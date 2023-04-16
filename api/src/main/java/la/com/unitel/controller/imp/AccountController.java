@@ -1,8 +1,9 @@
-package la.com.unitel.controller;
+package la.com.unitel.controller.imp;
 
 import la.com.unitel.business.account.IAccount;
 import la.com.unitel.business.account.dto.CreateAccountRequest;
 import la.com.unitel.business.account.dto.UpdateAccountRequest;
+import la.com.unitel.controller.AccountAPIs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.security.Principal;
  * @since : 4/15/2023, Sat
  **/
 @RestController
-public class AccountController implements AccountAPIs{
+public class AccountController implements AccountAPIs {
     @Autowired
     private IAccount iAccount;
 

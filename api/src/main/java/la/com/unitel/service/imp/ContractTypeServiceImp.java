@@ -15,4 +15,9 @@ import org.springframework.stereotype.Service;
 public class ContractTypeServiceImp implements ContractTypeService {
     @Autowired
     private ContractTypeRepo contractTypeRepo;
+
+    @Override
+    public boolean existsByCode(String code) {
+        return contractTypeRepo.existsByCode(code);
+    }
 }

@@ -7,12 +7,10 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -22,8 +20,13 @@ import java.time.LocalDateTime;
 @Table(name = "CONTRACT")
 public class Contract implements Serializable {
     @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "ID")
     private String id;  //waiting demo data
+
+    @Column(unique = true, nullable = false)
+    private String name;
 
     @Column(nullable = false)
     private String accountId;
@@ -37,11 +40,16 @@ public class Contract implements Serializable {
     @Column(nullable = false)
     private String contractType;
 
+    @Column(nullable = false)
+    private String meterCode;
+
     private String latitude;
     private String longitude;
     private Boolean isActive;
     private String address;
+    private String remark;
     private String createdBy;
+    private String updatedBy;
 
     @CreationTimestamp
     @JsonSerialize(using = LocalDateTimeSerializer.class)

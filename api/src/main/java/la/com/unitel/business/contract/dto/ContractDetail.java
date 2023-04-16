@@ -1,14 +1,12 @@
-package la.com.unitel.business.account.dto;
+package la.com.unitel.business.contract.dto;
 
-import la.com.unitel.business.BaseRequest;
 import la.com.unitel.business.account.view.AccountDetailView;
-import la.com.unitel.exception.validation.GenderRegex;
+import la.com.unitel.business.contract.view.ContractDetailView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,38 +14,44 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AccountDetail {
+public class ContractDetail {
     private String id;
+    private String name;
     private String username;
     private String phoneNumber;
-    private String roles;
-    private String district;
     private String gender;
-    private String department;
-    private String position;
+    private String district;
+    private String province;
+    private String contractType;
+    private String meterCode;
+    private String latitude;
+    private String longitude;
+    private Boolean isAcive;
     private String address;
     private String remark;
     private String createdBy;
     private String updatedBy;
-    private Boolean isActive;
     private LocalDateTime createdAt;
 
-    public static AccountDetail generate(AccountDetailView view){
-        return AccountDetail.builder()
+    public static ContractDetail generate(ContractDetailView view){
+        return ContractDetail.builder()
                 .id(view.getId())
+                .name(view.getName())
                 .username(view.getUsername())
                 .phoneNumber(view.getPhoneNumber())
-                .district(view.getDistrict())
                 .gender(view.getGender())
-                .department(view.getDepartment())
-                .position(view.getPosition())
+                .district(view.getDistrict())
+                .province(view.getProvince())
+                .contractType(view.getContractType())
+                .meterCode(view.getMeterCode())
+                .latitude(view.getLatitude())
+                .longitude(view.getLongitude())
+                .isAcive(view.getIsActive())
                 .address(view.getAddress())
                 .remark(view.getRemark())
                 .createdBy(view.getCreatedBy())
                 .updatedBy(view.getUpdatedBy())
-                .isActive(view.getIsActive())
                 .createdAt(view.getCreatedAt())
-                .roles(view.getRoles())
                 .build();
     }
 }

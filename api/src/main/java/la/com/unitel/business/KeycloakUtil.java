@@ -65,14 +65,18 @@ public class KeycloakUtil {
     }
 
     public UserRepresentation createUser(String username, String password, List<String> roleList) {
-        return this.createUser(username, password, roleList, null, null);
+        return this.createUser(username, password, roleList, null, null, null);
     }
 
     public UserRepresentation createUser(String username, String password, List<String> roleList, String phoneNumber) {
-        return this.createUser(username, password, roleList, phoneNumber, null);
+        return this.createUser(username, password, roleList, phoneNumber, null, null);
     }
 
-    public UserRepresentation createUser(String username, String password, List<String> roleList, String phoneNumber, String district) {
+    public UserRepresentation createUser(String username, String password, String phoneNumber, String district, String contractType) {
+        return this.createUser(username, password, null, phoneNumber, district, contractType);
+    }
+
+    public UserRepresentation createUser(String username, String password, List<String> roleList, String phoneNumber, String district, String contractType) {
         UsersResource usersResource = keycloak.realm(realm).users();
 
         CredentialRepresentation credentialRepresentation = createPasswordCredentials(password);
@@ -97,6 +101,12 @@ public class KeycloakUtil {
             }});
         }
 
+        if (contractType != null) {
+            map.put("contractType", new ArrayList<>() {{
+                add(contractType);
+            }});
+        }
+
         newUser.setAttributes(map);
 
         log.info(">>>[KEYCLOAK] create user request: {}", util.toJson(newUser));
@@ -111,11 +121,13 @@ public class KeycloakUtil {
                     return null;
                 }
                 newUser.setId(userRepre.getId());
-                if (!addRole(newUser.getId(), roleList)) {
-                    Response deleteUserResponse = usersResource.delete(newUser.getId());
-                    log.info("<<<[KEYCLOAK] delete user response: {}", deleteUserResponse.getStatusInfo().getReasonPhrase());
-                    log.info("Delete User Response Status : {}", deleteUserResponse.getStatus());
-                    return null;
+                if (roleList != null) {
+                    if (!addRole(newUser.getId(), roleList)) {
+                        Response deleteUserResponse = usersResource.delete(newUser.getId());
+                        log.info("<<<[KEYCLOAK] delete user response: {}", deleteUserResponse.getStatusInfo().getReasonPhrase());
+                        log.info("Delete User Response Status : {}", deleteUserResponse.getStatus());
+                        return null;
+                    }
                 }
                 return newUser;
             } else {
@@ -135,10 +147,10 @@ public class KeycloakUtil {
     }
 
     public boolean updateUser(String userId, String newPassword) {
-        return this.updateUser(userId, newPassword, null, null);
+        return this.updateUser(userId, newPassword, null, null, null);
     }
 
-    public boolean updateUser(String userId, String newPassword, String phoneNumber, String district) {
+    public boolean updateUser(String userId, String newPassword, String phoneNumber, String district, String contractType) {
         UserResource userResource = keycloak.realm(realm).users().get(userId);
         UserRepresentation userRepresentation = userResource.toRepresentation();
 
@@ -157,6 +169,12 @@ public class KeycloakUtil {
         if (district != null) {
             map.put("district", new ArrayList<>() {{
                 add(district);
+            }});
+        }
+
+        if (contractType != null) {
+            map.put("contractType", new ArrayList<>() {{
+                add(contractType);
             }});
         }
 

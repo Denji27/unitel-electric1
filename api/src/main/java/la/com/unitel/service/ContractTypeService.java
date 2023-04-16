@@ -5,5 +5,5 @@ package la.com.unitel.service;
  * @since : 12/23/2022, Fri
  **/
 public interface ContractTypeService {
-
+    boolean existsByCode(String code);
 }

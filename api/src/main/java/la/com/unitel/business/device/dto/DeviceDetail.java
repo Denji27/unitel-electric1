@@ -1,14 +1,11 @@
-package la.com.unitel.business.account.dto;
+package la.com.unitel.business.device.dto;
 
-import la.com.unitel.business.BaseRequest;
 import la.com.unitel.business.account.view.AccountDetailView;
-import la.com.unitel.exception.validation.GenderRegex;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,11 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AccountDetail {
+public class DeviceDetail {
     private String id;
     private String username;
     private String phoneNumber;
-    private String roles;
+    private List<String> roles;
     private String district;
     private String gender;
     private String department;
@@ -29,11 +26,11 @@ public class AccountDetail {
     private String remark;
     private String createdBy;
     private String updatedBy;
-    private Boolean isActive;
+    private Boolean isAcive;
     private LocalDateTime createdAt;
 
-    public static AccountDetail generate(AccountDetailView view){
-        return AccountDetail.builder()
+    public static DeviceDetail generate(AccountDetailView view){
+        return DeviceDetail.builder()
                 .id(view.getId())
                 .username(view.getUsername())
                 .phoneNumber(view.getPhoneNumber())
@@ -44,10 +41,8 @@ public class AccountDetail {
                 .address(view.getAddress())
                 .remark(view.getRemark())
                 .createdBy(view.getCreatedBy())
-                .updatedBy(view.getUpdatedBy())
-                .isActive(view.getIsActive())
+                .isAcive(view.getIsActive())
                 .createdAt(view.getCreatedAt())
-                .roles(view.getRoles())
                 .build();
     }
 }
