@@ -6,4 +6,6 @@ package la.com.unitel.business;
  **/
 public class Constant {
     public static String ENDUSER = "end-user";
+    public static String READER = "reader";
+    public static String CASHIER = "cashier";
 }

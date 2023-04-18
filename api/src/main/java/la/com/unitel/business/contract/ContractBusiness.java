@@ -57,6 +57,8 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         if (device == null)
             throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
 
+        //TODO validate readerId & contractId
+
         UserRepresentation keycloakUser = keycloakUtil.createUser(createContractRequest.getUsername(), createContractRequest.getPassword(),
                 util.toMsisdn(createContractRequest.getPhoneNumber()), district.getName(), createContractRequest.getContractType());
         if (keycloakUser == null)
@@ -66,6 +68,7 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         account.setId(keycloakUser.getId());
         account.setUsername(createContractRequest.getUsername());
         account.setPhoneNumber(util.toMsisdn(createContractRequest.getPhoneNumber()));
+        account.setAvatarId(createContractRequest.getAvatarId());
         account.setDistrictId(createContractRequest.getDistrictId());
         account.setGender(Gender.findByName(createContractRequest.getGender()));
         account.setAddress(createContractRequest.getAddress());
@@ -93,6 +96,18 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         contract.setRemark(createContractRequest.getRemark());
         contract.setCreatedBy(principal.getName());
         contract = contractService.save(contract);
+
+        ReaderContractMap readerContractMap = new ReaderContractMap();
+        readerContractMap.setId(new ReaderContractId(createContractRequest.getReaderId(), contract.getId()));
+        readerContractMap.setRole(Constant.READER);
+        readerContractMap.setCreatedBy(principal.getName());
+        contractService.save(readerContractMap);
+
+        ReaderContractMap cashierContractMap = new ReaderContractMap();
+        cashierContractMap.setId(new ReaderContractId(createContractRequest.getCashierId(), contract.getId()));
+        cashierContractMap.setRole(Constant.CASHIER);
+        cashierContractMap.setCreatedBy(principal.getName());
+        contractService.save(cashierContractMap);
 
         return generateSuccessResponse(createContractRequest.getRequestId(),
                 ContractDetail.generate(contractService.findContractDetail(contract.getId(), ContractDetailView.class)));
@@ -128,6 +143,7 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         account.setPhoneNumber(util.toMsisdn(updateContractRequest.getPhoneNumber()));
         account.setDistrictId(updateContractRequest.getDistrictId());
         account.setGender(Gender.findByName(updateContractRequest.getGender()));
+        account.setAvatarId(updateContractRequest.getAvatarId());
         if (updateContractRequest.getAddress() != null) account.setAddress(updateContractRequest.getAddress());
         if (updateContractRequest.getRemark() != null) account.setRemark(updateContractRequest.getRemark());
         account.setUpdatedBy(principal.getName());

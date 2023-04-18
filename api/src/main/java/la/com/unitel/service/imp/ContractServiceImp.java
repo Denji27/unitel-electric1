@@ -1,8 +1,10 @@
 package la.com.unitel.service.imp;
 
+import la.com.unitel.entity.account.ReaderContractMap;
 import la.com.unitel.entity.usage_payment.Contract;
 import la.com.unitel.repository.ConsumptionRepo;
 import la.com.unitel.repository.ContractRepo;
+import la.com.unitel.repository.ReaderContractMapRepo;
 import la.com.unitel.service.ConsumptionService;
 import la.com.unitel.service.ContractService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,17 @@ import java.util.List;
 public class ContractServiceImp implements ContractService {
     @Autowired
     private ContractRepo contractRepo;
+    @Autowired
+    private ReaderContractMapRepo readerContractMapRepo;
 
     @Override
     public Contract save(Contract contract) {
         return contractRepo.save(contract);
+    }
+
+    @Override
+    public ReaderContractMap save(ReaderContractMap readerContractMap) {
+        return readerContractMapRepo.save(readerContractMap);
     }
 
     @Override
@@ -39,5 +48,15 @@ public class ContractServiceImp implements ContractService {
     @Override
     public <T> T findContractDetail(String contractId, Class<T> type) {
         return contractRepo.findContractDetail(contractId, type);
+    }
+
+    @Override
+    public boolean existsByIdReaderIdAndIdContractIdAndRole(String readerId, String contractId, String role) {
+        return readerContractMapRepo.existsByIdReaderIdAndIdContractIdAndRole(readerId, contractId, role);
+    }
+
+    @Override
+    public List<String> findByIdContractIdAndRole(String contractId, String role) {
+        return readerContractMapRepo.findByIdContractIdAndRole(contractId, role);
     }
 }

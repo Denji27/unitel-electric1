@@ -1,59 +1,57 @@
-package la.com.unitel.business.contract.dto;
+package la.com.unitel.business.usage.dto;
 
-import la.com.unitel.business.account.view.AccountDetailView;
+import la.com.unitel.business.account.dto.AccountDetail;
+import la.com.unitel.business.contract.dto.ContractDetail;
+import la.com.unitel.business.contract.dto.PIC;
 import la.com.unitel.business.contract.view.ContractDetailView;
+import la.com.unitel.business.usage.view.BillDetailView;
+import la.com.unitel.entity.constant.BillStatus;
+import la.com.unitel.entity.usage_payment.Bill;
+import la.com.unitel.entity.usage_payment.Consumption;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ContractDetail {
+public class BillResponse {
     private String id;
-    private String name;
     private String username;
     private String phoneNumber;
     private String avatarId;
-    private String gender;
+    private BillStatus status;
+    private BigDecimal totalAmount;
     private String district;
     private String province;
-    private String contractType;
-    private String meterCode;
-    private String latitude;
-    private String longitude;
-    private Boolean isAcive;
-    private String address;
-    private String remark;
     private String createdBy;
     private String updatedBy;
     private LocalDateTime createdAt;
 
-    public static ContractDetail generate(ContractDetailView view){
-        return ContractDetail.builder()
+    public static BillResponse generate(BillDetailView view){
+        return BillResponse.builder()
                 .id(view.getId())
-                .name(view.getName())
                 .username(view.getUsername())
                 .phoneNumber(view.getPhoneNumber())
                 .avatarId(view.getAvatarId())
-                .gender(view.getGender())
+                .status(view.getStatus())
+                .totalAmount(view.getTotalAmount())
                 .district(view.getDistrict())
                 .province(view.getProvince())
-                .contractType(view.getContractType())
-                .meterCode(view.getMeterCode())
-                .latitude(view.getLatitude())
-                .longitude(view.getLongitude())
-                .isAcive(view.getIsActive())
-                .address(view.getAddress())
-                .remark(view.getRemark())
                 .createdBy(view.getCreatedBy())
                 .updatedBy(view.getUpdatedBy())
                 .createdAt(view.getCreatedAt())
                 .build();
     }
 }
+
+
+
+
+
+

@@ -20,6 +20,7 @@ public class AccountDetail {
     private String id;
     private String username;
     private String phoneNumber;
+    private String avatarId;
     private String roles;
     private String district;
     private String gender;
@@ -37,6 +38,7 @@ public class AccountDetail {
                 .id(view.getId())
                 .username(view.getUsername())
                 .phoneNumber(view.getPhoneNumber())
+                .avatarId(view.getAvatarId())
                 .district(view.getDistrict())
                 .gender(view.getGender())
                 .department(view.getDepartment())

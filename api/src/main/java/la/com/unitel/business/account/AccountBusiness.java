@@ -57,10 +57,14 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
         if (keycloakUser == null)
             throw new ErrorCommon(ErrorCode.KEYCLOAK_CREATE_FAILED, Translator.toLocale(ErrorCode.KEYCLOAK_CREATE_FAILED));
 
+
+        //TODO delete old avatar
+
         Account account = new Account();
         account.setId(keycloakUser.getId());
         account.setUsername(createAccountRequest.getUsername());
         account.setPhoneNumber(util.toMsisdn(createAccountRequest.getPhoneNumber()));
+        account.setAvatarId(createAccountRequest.getAvatarId());
         account.setDistrictId(createAccountRequest.getDistrictId());
         account.setGender(Gender.findByName(createAccountRequest.getGender()));
         account.setDepartment(createAccountRequest.getDepartment());
@@ -128,6 +132,7 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
         account.setPhoneNumber(util.toMsisdn(updateAccountRequest.getPhoneNumber()));
         account.setDistrictId(updateAccountRequest.getDistrictId());
         account.setGender(Gender.findByName(updateAccountRequest.getGender()));
+        account.setAvatarId(updateAccountRequest.getAvatarId());
         if (updateAccountRequest.getDepartment() != null) account.setDepartment(updateAccountRequest.getDepartment());
         if (updateAccountRequest.getPosition() != null) account.setPosition(updateAccountRequest.getPosition());
         if (updateAccountRequest.getAddress() != null) account.setAddress(updateAccountRequest.getAddress());

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author : Tungct
@@ -15,8 +16,9 @@ import java.util.List;
 public interface AccountRepo extends JpaRepository<Account, String> {
 
     boolean existsByUsername(String username);
+    Optional<Account> findByUsername(String username);
 
-    @Query(value = "select a.id as id, a.username as username, a.phone_number as phoneNumber,  ra.role_code as roles, \n" +
+    @Query(value = "select a.id as id, a.username as username, a.avatar_id as avatarId, a.phone_number as phoneNumber,  ra.role_code as roles, \n" +
             "d.name as district, a.gender as gender, a.department as department,\n" +
             "a.position as position, a.address as address, a.remark as remark,\n" +
             "a.created_By as createdBy, a.updated_By as updatedBy, a.is_active as isActive, a.created_at as createdAt \n" +
@@ -27,7 +29,7 @@ public interface AccountRepo extends JpaRepository<Account, String> {
             nativeQuery = true)
     <T> Page<T> searchAccountDetail(String input, Class<T> type, Pageable pageable);
 
-    @Query(value = "select a.id as id, a.username as username, a.phone_number as phoneNumber, ra.role_code as roles,\n" +
+    @Query(value = "select a.id as id, a.username as username, a.avatar_id as avatarId, a.phone_number as phoneNumber, ra.role_code as roles,\n" +
             "d.name as district, a.gender as gender, a.department as department,\n" +
             "a.position as position, a.address as address, a.remark as remark,\n" +
             "a.created_By as createdBy, a.updated_By as updatedBy, a.is_active as isActive, a.created_at as createdAt \n" +

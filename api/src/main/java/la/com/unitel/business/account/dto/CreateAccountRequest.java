@@ -25,6 +25,8 @@ public class CreateAccountRequest extends BaseRequest {
     private List<String> roleList;
     @NotBlank
     private String districtId;
+    @NotBlank
+    private String avatarId;
 
     @GenderRegex
     private String gender;

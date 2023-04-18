@@ -29,6 +29,9 @@ public class Consumption implements Serializable {
     private String contractId;
 
     @Column(nullable = false)
+    private String meterCode;
+
+    @Column(nullable = false)
     private Integer readUnit;
 
     @Column(nullable = false)
@@ -36,6 +39,7 @@ public class Consumption implements Serializable {
 
     @Column(nullable = false)
     private String readBy;
+    private String updatedBy;
     private String remark;
 
     @Column(nullable = false)
@@ -43,8 +47,8 @@ public class Consumption implements Serializable {
 
     private String latitude;
     private String longitude;
-    private String oldMeterUnit;
-    private String usageConsumption;
+    private Integer oldMeterUnit;
+    private Integer usageConsumption;
     private Boolean isRollOver;
     private Integer meterMaxUnit;
     private Boolean isMeterReplace;

@@ -17,14 +17,18 @@ public class BaseBusiness {
     public RoleService roleService;
     @Autowired
     public DistrictService districtService;
-
     @Autowired
     public ContractTypeService contractTypeService;
     @Autowired
     public ContractService contractService;
-
     @Autowired
     public MeterDeviceService deviceService;
+    @Autowired
+    public ConsumptionService consumptionService;
+    @Autowired
+    public BillService billService;
+    @Autowired
+    public TransactionService transactionService;
 
     public CommonResponse generateSuccessResponse(String requestId, Object result) {
         CommonResponse commonResponse = new CommonResponse("00000", "Success", result);

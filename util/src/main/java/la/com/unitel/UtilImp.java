@@ -173,4 +173,23 @@ public class UtilImp implements Util {
             return false;
         }
     }
+
+    @Override
+    public Boolean verifyMonthCode(String monthCode) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
+        if (monthCode != null) {
+            try {
+                Date date = simpleDateFormat.parse(monthCode.trim());
+                return simpleDateFormat.format(date).equals(monthCode.trim());
+            } catch (ParseException e) {
+                log.error("Parse date error due to: ", e);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String getMonthCode(LocalDate localDate) {
+        return localDate.format(DateTimeFormatter.ofPattern("yyyyMM"));
+    }
 }

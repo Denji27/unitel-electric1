@@ -35,6 +35,11 @@ public class AccountServiceImp implements AccountService {
     }
 
     @Override
+    public Account findByUsername(String username) {
+        return accountRepo.findByUsername(username).orElse(null);
+    }
+
+    @Override
     public <T> Page<T> searchAccountDetail(String input, Class<T> type, Pageable pageable) {
         return accountRepo.searchAccountDetail('%' + input + '%', type, pageable);
     }

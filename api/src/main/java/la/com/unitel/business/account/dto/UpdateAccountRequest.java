@@ -25,6 +25,9 @@ public class UpdateAccountRequest extends BaseRequest {
     private String districtId;
     @GenderRegex
     private String gender;
+    @NotBlank
+    private String avatarId;
+
     private String department;
     private String position;
     private String address;

@@ -19,4 +19,6 @@ public interface Util {
     <T> T toObject(String json, Class t);
     Long localDateTimeToMiliSecond(LocalDateTime dateTime);
     Boolean isDateStringInvalidFormat(String dateString);
+    Boolean verifyMonthCode(String monthCode);
+    String getMonthCode(LocalDate localDate);
 }

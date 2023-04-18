@@ -11,6 +11,7 @@ public interface AccountDetailView {
     String getId();
     String getUsername();
     String getPhoneNumber();
+    String getAvatarId();
     String getDistrict();
     String getGender();
     String getDepartment();

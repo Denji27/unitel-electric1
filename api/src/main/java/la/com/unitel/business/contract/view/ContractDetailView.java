@@ -10,6 +10,7 @@ public interface ContractDetailView {
     String getId();
     String getName();
     String getUsername();
+    String getAvatarId();
     String getPhoneNumber();
     String getDistrict();
     String getProvince();
