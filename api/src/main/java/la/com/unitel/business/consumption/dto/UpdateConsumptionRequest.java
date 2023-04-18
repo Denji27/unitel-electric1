@@ -1,13 +1,11 @@
-package la.com.unitel.business.usage.dto;
+package la.com.unitel.business.consumption.dto;
 
 import la.com.unitel.business.BaseRequest;
-import la.com.unitel.exception.validation.GenderRegex;
 import la.com.unitel.exception.validation.MonthCodeRegex;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 
 @Data

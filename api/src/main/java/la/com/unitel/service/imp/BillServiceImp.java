@@ -1,5 +1,6 @@
 package la.com.unitel.service.imp;
 
+import la.com.unitel.entity.constant.BillStatus;
 import la.com.unitel.entity.usage_payment.Bill;
 import la.com.unitel.repository.AccountRepo;
 import la.com.unitel.repository.BillRepo;
@@ -32,7 +33,7 @@ public class BillServiceImp implements BillService {
     }
 
     @Override
-    public <T> Page<T> searchBill(LocalDate fromDate, LocalDate toDate, String input, Class<T> type, Pageable pageable) {
-        return billRepo.searchBill(fromDate, toDate, input, type, pageable);
+    public <T> Page<T> searchBill(BillStatus status, LocalDate fromDate, LocalDate toDate, String input, Class<T> type, Pageable pageable) {
+        return billRepo.searchBill(status, fromDate, toDate, input, type, pageable);
     }
 }

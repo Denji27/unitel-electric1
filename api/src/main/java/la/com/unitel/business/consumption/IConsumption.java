@@ -1,12 +1,10 @@
-package la.com.unitel.business.usage;
+package la.com.unitel.business.consumption;
 
 import la.com.unitel.business.CommonResponse;
-import la.com.unitel.business.usage.dto.ReadConsumptionRequest;
-import la.com.unitel.business.usage.dto.UpdateConsumptionRequest;
-import org.springframework.data.domain.Pageable;
+import la.com.unitel.business.consumption.dto.ReadConsumptionRequest;
+import la.com.unitel.business.consumption.dto.UpdateConsumptionRequest;
 
 import java.security.Principal;
-import java.time.LocalDate;
 
 /**
  * @author : Tungct
@@ -15,6 +13,4 @@ import java.time.LocalDate;
 public interface IConsumption {
     CommonResponse onReadConsumption(ReadConsumptionRequest readConsumptionRequest, Principal principal);
     CommonResponse onUpdateConsumption(String consumptionId, UpdateConsumptionRequest updateConsumptionRequest, Principal principal);
-    CommonResponse onViewBillDetail(String billId);
-    CommonResponse onSearchBill(LocalDate fromDate, LocalDate toDate, String input, Pageable pageable);
 }

@@ -1,4 +1,4 @@
-package la.com.unitel.business.usage.dto;
+package la.com.unitel.business.bill.dto;
 
 import la.com.unitel.business.account.dto.AccountDetail;
 import la.com.unitel.business.contract.dto.PIC;

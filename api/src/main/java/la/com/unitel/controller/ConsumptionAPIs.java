@@ -1,10 +1,7 @@
 package la.com.unitel.controller;
 
-import la.com.unitel.business.device.dto.CreateDeviceRequest;
-import la.com.unitel.business.device.dto.UpdateDeviceRequest;
-import la.com.unitel.business.usage.dto.ReadConsumptionRequest;
-import la.com.unitel.business.usage.dto.UpdateConsumptionRequest;
-import org.springframework.data.domain.PageRequest;
+import la.com.unitel.business.consumption.dto.ReadConsumptionRequest;
+import la.com.unitel.business.consumption.dto.UpdateConsumptionRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,13 +27,4 @@ public interface ConsumptionAPIs {
                                     @Valid @RequestBody UpdateConsumptionRequest updateConsumptionRequest,
                                     Principal principal);
 
-    @GetMapping("{billId}")
-    ResponseEntity<?> viewBillDetail(@PathVariable String billId);
-
-    @GetMapping
-    ResponseEntity<?> search(@DateTimeFormat(pattern = "dd/MM/yyyy") @Validated LocalDate fromDate,
-                             @DateTimeFormat(pattern = "dd/MM/yyyy") @Validated LocalDate toDate,
-                             @RequestParam(required = false) String input,
-                             @RequestParam(defaultValue = "0", required = false) int offset,
-                             @RequestParam(defaultValue = "10", required = false) int limit);
 }

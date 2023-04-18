@@ -1,13 +1,7 @@
-package la.com.unitel.business.usage.dto;
+package la.com.unitel.business.bill.dto;
 
-import la.com.unitel.business.account.dto.AccountDetail;
-import la.com.unitel.business.contract.dto.ContractDetail;
-import la.com.unitel.business.contract.dto.PIC;
-import la.com.unitel.business.contract.view.ContractDetailView;
-import la.com.unitel.business.usage.view.BillDetailView;
+import la.com.unitel.business.bill.view.BillDetailView;
 import la.com.unitel.entity.constant.BillStatus;
-import la.com.unitel.entity.usage_payment.Bill;
-import la.com.unitel.entity.usage_payment.Consumption;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

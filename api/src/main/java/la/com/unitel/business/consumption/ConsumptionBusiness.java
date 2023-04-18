@@ -1,17 +1,14 @@
-package la.com.unitel.business.usage;
+package la.com.unitel.business.consumption;
 
-import la.com.unitel.business.*;
-import la.com.unitel.business.account.dto.AccountDetail;
-import la.com.unitel.business.account.view.AccountDetailView;
-import la.com.unitel.business.contract.dto.ContractDetail;
-import la.com.unitel.business.contract.dto.PIC;
-import la.com.unitel.business.contract.view.ContractDetailView;
-import la.com.unitel.business.usage.dto.BillResponse;
-import la.com.unitel.business.usage.dto.BillUsageDetail;
-import la.com.unitel.business.usage.dto.ReadConsumptionRequest;
-import la.com.unitel.business.usage.dto.UpdateConsumptionRequest;
-import la.com.unitel.business.usage.view.BillDetailView;
-import la.com.unitel.entity.account.*;
+import la.com.unitel.business.BaseBusiness;
+import la.com.unitel.business.CommonResponse;
+import la.com.unitel.business.Constant;
+import la.com.unitel.business.Translator;
+import la.com.unitel.business.consumption.dto.ReadConsumptionRequest;
+import la.com.unitel.business.consumption.dto.UpdateConsumptionRequest;
+import la.com.unitel.entity.account.Account;
+import la.com.unitel.entity.account.MeterDevice;
+import la.com.unitel.entity.account.RoleAccount;
 import la.com.unitel.entity.constant.BillStatus;
 import la.com.unitel.entity.usage_payment.Bill;
 import la.com.unitel.entity.usage_payment.Consumption;
@@ -19,9 +16,6 @@ import la.com.unitel.entity.usage_payment.Contract;
 import la.com.unitel.exception.ErrorCode;
 import la.com.unitel.exception.ErrorCommon;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +23,6 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -119,7 +112,7 @@ public class ConsumptionBusiness extends BaseBusiness implements IConsumption {
         bill.setUsageId(consumption.getId());
         bill.setContractId(contract.getId());
         bill.setPolicyId("update later");
-        bill.setStatus(BillStatus.INIT);
+        bill.setStatus(BillStatus.UNPAID);
 //        bill.setTransactionId();
 //        bill.setLateFee();
 //        bill.setPaymentDeadline();
@@ -137,45 +130,5 @@ public class ConsumptionBusiness extends BaseBusiness implements IConsumption {
     @Override
     public CommonResponse onUpdateConsumption(String consumptionId, UpdateConsumptionRequest updateConsumptionRequest, Principal principal) {
         return null;
-    }
-
-    @Override
-    public CommonResponse onViewBillDetail(String billId) {
-        Bill bill = billService.findById(billId);
-        if (bill == null)
-            throw new ErrorCommon(ErrorCode.BILL_INVALID, Translator.toLocale(ErrorCode.BILL_INVALID));
-
-        Contract contract = contractService.findById(bill.getContractId());
-        if (contract == null)
-            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
-
-        Consumption consumption = consumptionService.findById(bill.getUsageId());
-        if (consumption == null)
-            throw new ErrorCommon(ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
-
-        Account account = accountService.findById(contract.getAccountId());
-        if (account == null)
-            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
-
-        List<String> readerList = contractService.findByIdContractIdAndRole(contract.getId(), Constant.READER);
-        List<String> cashierList = contractService.findByIdContractIdAndRole(contract.getId(), Constant.CASHIER);
-
-
-        BillUsageDetail billUsageDetail = BillUsageDetail.builder()
-                .bill(bill)
-                .consumption(consumption)
-                .accountDetail(AccountDetail.generate(accountService.findAccountDetail(account.getId(), AccountDetailView.class)))
-                .pic(new PIC(readerList, cashierList))
-                .build();
-
-        return generateSuccessResponse(UUID.randomUUID().toString(), billUsageDetail);
-    }
-
-    @Override
-    public CommonResponse onSearchBill(LocalDate fromDate, LocalDate toDate, String input, Pageable pageable) {
-        Page<BillDetailView> views = billService.searchBill(fromDate, toDate, input, BillDetailView.class, pageable);
-        List<BillResponse> collect = views.getContent().parallelStream().map(BillResponse::generate).collect(Collectors.toList());
-        Page<BillResponse> result = new PageImpl<>(collect, pageable, views.getTotalElements());
-        return generateSuccessResponse(UUID.randomUUID().toString(), result);
     }
 }
