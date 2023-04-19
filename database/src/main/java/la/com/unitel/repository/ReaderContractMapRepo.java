@@ -18,4 +18,7 @@ public interface ReaderContractMapRepo extends JpaRepository<ReaderContractMap, 
 
     @Query("select a.username from ReaderContractMap r, Account a where r.id.readerId = a.id and r.id.contractId = :contractId and r.role = :role")
     List<String> findByIdContractIdAndRole(String contractId, String role);
+
+    @Query("select r.id.contractId from ReaderContractMap r where r.id.readerId = :readerId and r.role = :role")
+    List<String> findByIdReaderIdAndRole(String readerId, String role);
 }

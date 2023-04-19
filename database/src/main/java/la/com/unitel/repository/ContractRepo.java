@@ -30,4 +30,11 @@ public interface ContractRepo extends JpaRepository<Contract, String> {
             "from contract c , account a , district d , province p \n" +
             "WHERE c.account_id = a.id and c.district_id = d.id and c.province_id = p.id and c.id = :contractId", nativeQuery = true)
     <T> T findContractDetail(String contractId, Class<T> type);
+
+    @Query(value = "select c.id as id, c.name as name, a.username as username, a.avatar_id as avatarId, a.phone_number as phoneNumber, a.gender as gender,\n" +
+            "d.name as district, p.name as province, c.contract_type as contractType, c.meter_code as meterCode, \n" +
+            "c.latitude as latitude, c.longitude as longitude, c.is_active as isActive, c.address as address, c.remark as remark, c.created_by as createdBy, c.updated_by as updatedBy, c.created_at as createdAt\n" +
+            "from contract c , account a , district d , province p \n" +
+            "WHERE c.account_id = a.id and c.district_id = d.id and c.province_id = p.id and c.id in :contractIdList", nativeQuery = true)
+    <T> Page<T> findContractDetailByIdIn(List<String> contractIdList, Class<T> type, Pageable pageable);
 }
