@@ -169,4 +169,9 @@ public class ConsumptionBusiness extends BaseBusiness implements IConsumption {
         Page<HistoryRead> result = new PageImpl<>(collect, pageable, views.getTotalElements());
         return generateSuccessResponse(UUID.randomUUID().toString(), result);
     }
+
+    @Override
+    public CommonResponse onConsumptionDetail(String consumptionId) {
+        return null;
+    }
 }

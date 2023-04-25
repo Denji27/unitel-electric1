@@ -69,4 +69,9 @@ public class ContractServiceImp implements ContractService {
     public List<String> findByIdReaderIdAndRole(String readerId, String role) {
         return readerContractMapRepo.findByIdReaderIdAndRole(readerId, role);
     }
+
+    @Override
+    public boolean existsByMeterCode(String meterCode) {
+       return contractRepo.existsByMeterCode(meterCode);
+    }
 }

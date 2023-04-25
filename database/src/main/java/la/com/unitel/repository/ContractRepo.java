@@ -14,6 +14,8 @@ import java.util.List;
  **/
 public interface ContractRepo extends JpaRepository<Contract, String> {
 
+    boolean existsByMeterCode(String meterCode);
+
     @Query(value = "select c.id as id, c.name as name, a.username as username, a.avatar_id as avatarId, a.phone_number as phoneNumber, a.gender as gender,\n" +
             "d.name as district, p.name as province, c.contract_type as contractType, c.meter_code as meterCode, \n" +
             "c.latitude as latitude, c.longitude as longitude, c.is_active as isActive, c.address as address, c.remark as remark, c.created_by as createdBy, c.updated_by as updatedBy, c.created_at as createdAt" +

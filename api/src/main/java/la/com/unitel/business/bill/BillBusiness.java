@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -53,7 +54,6 @@ public class BillBusiness extends BaseBusiness implements IBill {
         List<String> readerList = contractService.findByIdContractIdAndRole(contract.getId(), Constant.READER);
         List<String> cashierList = contractService.findByIdContractIdAndRole(contract.getId(), Constant.CASHIER);
 
-
         BillUsageDetail billUsageDetail = BillUsageDetail.builder()
                 .bill(bill)
                 .consumption(consumption)
@@ -70,5 +70,10 @@ public class BillBusiness extends BaseBusiness implements IBill {
         List<BillResponse> collect = views.getContent().parallelStream().map(BillResponse::generate).collect(Collectors.toList());
         Page<BillResponse> result = new PageImpl<>(collect, pageable, views.getTotalElements());
         return generateSuccessResponse(UUID.randomUUID().toString(), result);
+    }
+
+    @Override
+    public CommonResponse onGetUnPaidBillByCashier(Pageable pageable, Principal principal) {
+        return null;
     }
 }

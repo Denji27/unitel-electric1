@@ -21,8 +21,6 @@ public class UpdateContractRequest extends BaseRequest {
     private String districtId;
     @NotBlank
     private String contractType;
-    @NotBlank
-    private String avatarId;
     @GenderRegex
     private String gender;
     private String latitude;

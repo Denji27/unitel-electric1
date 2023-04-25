@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
@@ -21,12 +22,10 @@ public class CreateAccountRequest extends BaseRequest {
     private String password;
     @NotBlank
     private String phoneNumber;
-    @NotBlank
+    @NotEmpty
     private List<String> roleList;
     @NotBlank
     private String districtId;
-    @NotBlank
-    private String avatarId;
 
     @GenderRegex
     private String gender;
