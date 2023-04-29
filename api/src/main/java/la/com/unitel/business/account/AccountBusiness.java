@@ -3,13 +3,12 @@ package la.com.unitel.business.account;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import la.com.unitel.KeycloakUtil;
 import la.com.unitel.business.*;
-import la.com.unitel.business.account.dto.AccountDetail;
-import la.com.unitel.business.account.dto.CreateAccountRequest;
-import la.com.unitel.business.account.dto.UpdateAccountRequest;
+import la.com.unitel.business.account.dto.*;
 import la.com.unitel.business.account.view.AccountDetailView;
 import la.com.unitel.entity.account.*;
 import la.com.unitel.entity.constant.Gender;
 import la.com.unitel.entity.edl.District;
+import la.com.unitel.entity.usage_payment.Contract;
 import la.com.unitel.exception.ErrorCode;
 import la.com.unitel.exception.ErrorCommon;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -212,5 +208,73 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
         List<AccountDetail> collect = views.getContent().parallelStream().map(AccountDetail::generate).collect(Collectors.toList());
         Page<AccountDetail> result = new PageImpl<>(collect, pageable, views.getTotalElements());
         return generateSuccessResponse(UUID.randomUUID().toString(), result);
+    }
+
+    @Override
+    @Transactional
+    public CommonResponse onLinkAccountAndContract(AccountContractLinkRequest linkRequest, Principal principal) {
+        Account account = accountService.findById(linkRequest.getAccountId());
+        if (account == null)
+            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+
+        List<AccountContract> addList = new ArrayList<>();
+        for (String contractId : linkRequest.getContractIds()) {
+            Contract contract = contractService.findById(contractId);
+            if (contract == null || !contract.getIsActive())
+                throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+
+            AccountContract accountContract = new AccountContract();
+            accountContract.setId(new AccountContractId(account.getId(), contractId));
+            accountContract.setCreatedBy(principal.getName());
+            addList.add(accountContract);
+        }
+        accountService.save(addList);
+        return generateSuccessResponse(linkRequest.getRequestId(), null);
+    }
+
+    @Override
+    public CommonResponse onLinkAccountAndWallet(AccountWalletRequest linkRequest, Principal principal) {
+        Account account = accountService.findById(linkRequest.getAccountId());
+        if (account == null)
+            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+
+        if (accountService.isWalletAccountLinked(null, linkRequest.getWalletAccount()))
+            throw new ErrorCommon(ErrorCode.WALLET_ACCOUNT_INVALID, Translator.toLocale(ErrorCode.WALLET_ACCOUNT_INVALID));
+
+        AccountWallet accountWallet = new AccountWallet();
+        accountWallet.setId(new AccountWalletId(account.getId(), linkRequest.getWalletAccount()));
+        accountWallet.setWalletName(linkRequest.getWalletName());
+        accountWallet.setCreatedBy(principal.getName());
+        accountService.save(accountWallet);
+        return generateSuccessResponse(linkRequest.getRequestId(), null);
+    }
+
+    @Override
+    public CommonResponse onUnLinkAccountAndWallet(AccountWalletRequest linkRequest, Principal principal) {
+        Account account = accountService.findById(linkRequest.getAccountId());
+        if (account == null)
+            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+
+        if (accountService.isWalletAccountLinked(linkRequest.getAccountId(), linkRequest.getWalletAccount()))
+            throw new ErrorCommon(ErrorCode.WALLET_ACCOUNT_INVALID, Translator.toLocale(ErrorCode.WALLET_ACCOUNT_INVALID));
+
+        accountService.unlinkAccountWallet(new AccountWalletId(linkRequest.getAccountId(), linkRequest.getWalletAccount()));
+        return generateSuccessResponse(linkRequest.getRequestId(), null);
+    }
+
+    @Override
+    public CommonResponse onUpdateAccountWalletName(AccountWalletRequest linkRequest, Principal principal) {
+        Account account = accountService.findById(linkRequest.getAccountId());
+        if (account == null)
+            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+
+        AccountWallet accountWallet = accountService.findById(new AccountWalletId(linkRequest.getAccountId(), linkRequest.getWalletAccount()));
+        if (accountWallet == null)
+            throw new ErrorCommon(ErrorCode.WALLET_ACCOUNT_INVALID, Translator.toLocale(ErrorCode.WALLET_ACCOUNT_INVALID));
+
+        accountWallet.setWalletName(linkRequest.getWalletName());
+        accountWallet.setUpdatedBy(principal.getName());
+        accountService.save(accountWallet);
+        return generateSuccessResponse(linkRequest.getRequestId(), null);
     }
 }

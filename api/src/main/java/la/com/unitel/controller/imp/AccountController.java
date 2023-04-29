@@ -1,6 +1,8 @@
 package la.com.unitel.controller.imp;
 
 import la.com.unitel.business.account.IAccount;
+import la.com.unitel.business.account.dto.AccountContractLinkRequest;
+import la.com.unitel.business.account.dto.AccountWalletRequest;
 import la.com.unitel.business.account.dto.CreateAccountRequest;
 import la.com.unitel.business.account.dto.UpdateAccountRequest;
 import la.com.unitel.controller.AccountAPIs;
@@ -54,5 +56,25 @@ public class AccountController implements AccountAPIs {
     @Override
     public ResponseEntity<?> getAccountByRole(String role, int offset, int limit) {
         return ResponseEntity.ok(iAccount.onGetReaderList(role, PageRequest.of(offset, limit)));
+    }
+
+    @Override
+    public ResponseEntity<?> linkAccountAndContract(AccountContractLinkRequest linkRequest, Principal principal) {
+        return ResponseEntity.ok(iAccount.onLinkAccountAndContract(linkRequest, principal));
+    }
+
+    @Override
+    public ResponseEntity<?> linkAccountAndWallet(AccountWalletRequest linkRequest, Principal principal) {
+        return ResponseEntity.ok(iAccount.onLinkAccountAndWallet(linkRequest, principal));
+    }
+
+    @Override
+    public ResponseEntity<?> unlinkAccountAndWallet(AccountWalletRequest linkRequest, Principal principal) {
+        return ResponseEntity.ok(iAccount.onUnLinkAccountAndWallet(linkRequest, principal));
+    }
+
+    @Override
+    public ResponseEntity<?> updateWalletName(AccountWalletRequest linkRequest, Principal principal) {
+        return ResponseEntity.ok(iAccount.onUpdateAccountWalletName(linkRequest, principal));
     }
 }

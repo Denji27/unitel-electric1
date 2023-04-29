@@ -1,5 +1,7 @@
 package la.com.unitel.controller;
 
+import la.com.unitel.business.account.dto.AccountContractLinkRequest;
+import la.com.unitel.business.account.dto.AccountWalletRequest;
 import la.com.unitel.business.account.dto.CreateAccountRequest;
 import la.com.unitel.business.account.dto.UpdateAccountRequest;
 import org.springframework.http.ResponseEntity;
@@ -44,4 +46,20 @@ public interface AccountAPIs {
     ResponseEntity<?> getAccountByRole(@RequestParam(required = false, defaultValue = "edl-reader") String role,
                                        @RequestParam(defaultValue = "0", required = false) int offset,
                                        @RequestParam(defaultValue = "10", required = false) int limit);
+
+    @PostMapping("link/contract")
+    ResponseEntity<?> linkAccountAndContract(@Valid @RequestBody AccountContractLinkRequest linkRequest,
+                                             Principal principal);
+
+    @PostMapping("link/wallet")
+    ResponseEntity<?> linkAccountAndWallet(@Valid @RequestBody AccountWalletRequest linkRequest,
+                                           Principal principal);
+
+    @PostMapping("unlink/wallet")
+    ResponseEntity<?> unlinkAccountAndWallet(@Valid @RequestBody AccountWalletRequest linkRequest,
+                                             Principal principal);
+
+    @PutMapping("link/wallet")
+    ResponseEntity<?> updateWalletName(@Valid @RequestBody AccountWalletRequest linkRequest,
+                                       Principal principal);
 }

@@ -49,17 +49,17 @@ public class ConsumptionBusiness extends BaseBusiness implements IConsumption {
             throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
 
         Contract contract = contractService.findById(device.getContractId());
-        if (contract == null || !contract.getIsActive() || contract.getAccountId() == null)
+        if (contract == null || !contract.getIsActive())
             throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
-        Account account = accountService.findById(contract.getAccountId());
+        /*Account account = accountService.findById(contract.getAccountId());
         if (account == null)
-            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));*/
 
-        List<RoleAccount> roleAccounts = roleService.findByIdAccountId(account.getId());
+        /*List<RoleAccount> roleAccounts = roleService.findByIdAccountId(account.getId());
         if (roleAccounts.isEmpty() ||
                 !roleAccounts.parallelStream().map(roleAccount -> roleAccount.getId().getRoleCode()).collect(Collectors.toSet()).contains(Constant.ENDUSER))
-            throw new ErrorCommon(ErrorCode.CUSTOMER_IS_NOT_ENDUSER, Translator.toLocale(ErrorCode.CUSTOMER_IS_NOT_ENDUSER));
+            throw new ErrorCommon(ErrorCode.CUSTOMER_IS_NOT_ENDUSER, Translator.toLocale(ErrorCode.CUSTOMER_IS_NOT_ENDUSER));*/
 
         Account reader = accountService.findByUsername(principal.getName());
         if (reader == null || !reader.getIsActive())

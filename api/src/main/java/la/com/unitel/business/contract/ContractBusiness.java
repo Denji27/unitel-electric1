@@ -91,8 +91,11 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         Contract contract = new Contract();
         contract.setName(createContractRequest.getName());
         contract.setDistrictId(createContractRequest.getDistrictId());
+        contract.setPhoneNumber(util.toMsisdn(createContractRequest.getPhoneNumber()));
         contract.setProvinceId(district.getProvinceId());
         contract.setContractType(createContractRequest.getContractType());
+        contract.setGender(Gender.findByName(createContractRequest.getGender()));
+        contract.setAvatarId(contract.getGender().equals(Gender.MALE) ? Constant.AVATAR_MALE_DEFAULT : Constant.AVATAR_FEMALE_DEFAULT);
         contract.setLatitude(createContractRequest.getLatitude());
         contract.setLongitude(createContractRequest.getLongitude());
         contract.setMeterCode(createContractRequest.getDeviceId());
@@ -153,9 +156,12 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         account.setUpdatedBy(principal.getName());
         account = accountService.save(account);*/
 
+        contract.setPhoneNumber(util.toMsisdn(updateContractRequest.getPhoneNumber()));
         contract.setDistrictId(updateContractRequest.getDistrictId());
         contract.setProvinceId(district.getProvinceId());
         contract.setContractType(updateContractRequest.getContractType());
+        contract.setGender(Gender.findByName(updateContractRequest.getGender()));
+        contract.setAvatarId(contract.getGender().equals(Gender.MALE) ? Constant.AVATAR_MALE_DEFAULT : Constant.AVATAR_FEMALE_DEFAULT);
         if (updateContractRequest.getLatitude() != null) contract.setLatitude(updateContractRequest.getLatitude());
         if (updateContractRequest.getLongitude() != null) contract.setLongitude(updateContractRequest.getLongitude());
         contract.setIsActive(true);
