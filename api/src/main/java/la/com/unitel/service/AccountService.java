@@ -16,6 +16,7 @@ public interface AccountService {
     Account save(Account account);
     Account findById(String id);
     Account findByUsername(String username);
+    Boolean isPhoneNumberExistedForEDL(String phoneNumber, String accountId);
     <T> Page<T> searchAccountDetail(String input, Class<T> type, Pageable pageable);
     <T> T findAccountDetail(String accountId, Class<T> type);
     <T> Page<T> findAccountByRole(String role, Class<T> type, Pageable pageable);

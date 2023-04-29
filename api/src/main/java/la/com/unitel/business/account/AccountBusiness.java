@@ -7,10 +7,9 @@ import la.com.unitel.business.account.dto.AccountDetail;
 import la.com.unitel.business.account.dto.CreateAccountRequest;
 import la.com.unitel.business.account.dto.UpdateAccountRequest;
 import la.com.unitel.business.account.view.AccountDetailView;
-import la.com.unitel.business.contract.dto.ContractDetail;
-import la.com.unitel.business.contract.view.ContractDetailView;
 import la.com.unitel.entity.account.*;
 import la.com.unitel.entity.constant.Gender;
+import la.com.unitel.entity.edl.District;
 import la.com.unitel.exception.ErrorCode;
 import la.com.unitel.exception.ErrorCommon;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +53,9 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
         District district = districtService.findById(createAccountRequest.getDistrictId());
         if (district == null)
             throw new ErrorCommon(ErrorCode.DISTRICT_INVALID, Translator.toLocale(ErrorCode.DISTRICT_INVALID));
+
+        if (accountService.isPhoneNumberExistedForEDL(util.toMsisdn(createAccountRequest.getPhoneNumber()), null))
+            throw new ErrorCommon(ErrorCode.PHONE_NUMBER_EXISTED, Translator.toLocale(ErrorCode.PHONE_NUMBER_EXISTED));
 
         UserRepresentation keycloakUser = keycloakUtil.createUser(createAccountRequest.getUsername(), createAccountRequest.getPassword(), createAccountRequest.getRoleList(),
                 util.toMsisdn(createAccountRequest.getPhoneNumber()), district.getName(), null);
@@ -99,6 +101,9 @@ public class AccountBusiness extends BaseBusiness implements IAccount{
         District district = districtService.findById(updateAccountRequest.getDistrictId());
         if (district == null)
             throw new ErrorCommon(ErrorCode.DISTRICT_INVALID, Translator.toLocale(ErrorCode.DISTRICT_INVALID));
+
+        if (accountService.isPhoneNumberExistedForEDL(util.toMsisdn(updateAccountRequest.getPhoneNumber()), accountId))
+            throw new ErrorCommon(ErrorCode.PHONE_NUMBER_EXISTED, Translator.toLocale(ErrorCode.PHONE_NUMBER_EXISTED));
 
         UserRepresentation keycloakUser = keycloakUtil.findByUsername(account.getUsername());
         if (keycloakUser == null)

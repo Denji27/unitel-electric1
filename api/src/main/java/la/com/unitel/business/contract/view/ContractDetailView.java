@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public interface ContractDetailView {
     String getId();
     String getName();
-    String getUsername();
+//    String getUsername();
     String getAvatarId();
     String getPhoneNumber();
     String getDistrict();

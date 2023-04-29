@@ -3,18 +3,16 @@ package la.com.unitel.business.contract;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import la.com.unitel.KeycloakUtil;
 import la.com.unitel.business.*;
-import la.com.unitel.business.account.dto.AccountDetail;
-import la.com.unitel.business.account.view.AccountDetailView;
 import la.com.unitel.business.contract.dto.ContractDetail;
 import la.com.unitel.business.contract.dto.CreateContractRequest;
 import la.com.unitel.business.contract.dto.UpdateContractRequest;
 import la.com.unitel.business.contract.view.ContractDetailView;
 import la.com.unitel.entity.account.*;
 import la.com.unitel.entity.constant.Gender;
+import la.com.unitel.entity.edl.District;
 import la.com.unitel.entity.usage_payment.Contract;
 import la.com.unitel.exception.ErrorCode;
 import la.com.unitel.exception.ErrorCommon;
-import la.com.unitel.exception.validation.GenderRegex;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Column;
-import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
@@ -69,7 +65,7 @@ public class ContractBusiness extends BaseBusiness implements IContract {
 
         //TODO validate readerId & contractId active
 
-        UserRepresentation keycloakUser = keycloakUtil.createUser(createContractRequest.getUsername(), createContractRequest.getPassword(),
+        /*UserRepresentation keycloakUser = keycloakUtil.createUser(createContractRequest.getUsername(), createContractRequest.getPassword(),
                 util.toMsisdn(createContractRequest.getPhoneNumber()), district.getName(), createContractRequest.getContractType());
         if (keycloakUser == null)
             throw new ErrorCommon(ErrorCode.KEYCLOAK_CREATE_FAILED, Translator.toLocale(ErrorCode.KEYCLOAK_CREATE_FAILED));
@@ -85,16 +81,15 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         account.setRemark(createContractRequest.getRemark());
         account.setCreatedBy(principal.getName());
         account.setIsActive(true);
-        account = accountService.save(account);
+        account = accountService.save(account);*/
 
-        RoleAccount roleAccount = new RoleAccount();
+        /*RoleAccount roleAccount = new RoleAccount();
         roleAccount.setId(new RoleAccountId(Constant.ENDUSER, account.getId()));
         roleAccount.setCreatedBy(principal.getName());
-        roleAccount = roleService.saveRoleAccount(roleAccount);
+        roleAccount = roleService.saveRoleAccount(roleAccount);*/
 
         Contract contract = new Contract();
         contract.setName(createContractRequest.getName());
-        contract.setAccountId(account.getId());
         contract.setDistrictId(createContractRequest.getDistrictId());
         contract.setProvinceId(district.getProvinceId());
         contract.setContractType(createContractRequest.getContractType());
@@ -137,7 +132,7 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         if (!isValidContractType)
             throw new ErrorCommon(ErrorCode.CONTRACT_TYPE_INVALID, Translator.toLocale(ErrorCode.CONTRACT_TYPE_INVALID));
 
-        Account account = accountService.findById(contract.getAccountId());
+        /*Account account = accountService.findById(contract.getAccountId());
         if (account == null)
             throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
 
@@ -156,9 +151,8 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         if (updateContractRequest.getAddress() != null) account.setAddress(updateContractRequest.getAddress());
         if (updateContractRequest.getRemark() != null) account.setRemark(updateContractRequest.getRemark());
         account.setUpdatedBy(principal.getName());
-        account = accountService.save(account);
+        account = accountService.save(account);*/
 
-        contract.setAccountId(account.getId());
         contract.setDistrictId(updateContractRequest.getDistrictId());
         contract.setProvinceId(district.getProvinceId());
         contract.setContractType(updateContractRequest.getContractType());
@@ -180,9 +174,9 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         if (contract == null)
             throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
-        Account account = accountService.findById(contract.getAccountId());
+       /* Account account = accountService.findById(contract.getAccountId());
         if (account == null)
-            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));*/
 
         String fileId = null;
 
@@ -195,7 +189,7 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         if (fileId == null)
             throw new ErrorCommon(ErrorCode.FILE_UPLOAD_ERROR, Translator.toLocale(ErrorCode.FILE_UPLOAD_ERROR));
 
-        if (account.getAvatarId() != null) {
+        /*if (account.getAvatarId() != null) {
             log.info("Delete old avatar");
             String[] split = account.getAvatarId().split("/");
             storageService.deleteFile(Constant.ELECTRIC, split[split.length - 1]);
@@ -203,7 +197,7 @@ public class ContractBusiness extends BaseBusiness implements IContract {
 
         account.setAvatarId("https://s3.mytel.com.mm/electric/" + fileId);
         account.setUpdatedBy(principal.getName());
-        account = accountService.save(account);
+        account = accountService.save(account);*/
 
         contract.setUpdatedBy(principal.getName());
         contract = contractService.save(contract);

@@ -1,6 +1,6 @@
 package la.com.unitel.service;
 
-import la.com.unitel.entity.account.District;
+import la.com.unitel.entity.edl.District;
 
 /**
  * @author : Tungct

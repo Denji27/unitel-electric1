@@ -1,4 +1,4 @@
-package la.com.unitel.entity.account;
+package la.com.unitel.entity.edl;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "DISTRICT")
-public class District implements Serializable {
+@Table(name = "PROVINCE")
+public class Province implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
@@ -27,13 +27,6 @@ public class District implements Serializable {
 
     @Column(nullable = false)
     private String name;
-
-    private String contactPhone;
-    private String contactName;
-    private String address;
-    private Boolean isActive;
-    private String provinceId;
-    private String createdBy;
 
     @CreationTimestamp
     @JsonSerialize(using = LocalDateTimeSerializer.class)

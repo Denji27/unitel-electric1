@@ -18,6 +18,10 @@ public interface AccountRepo extends JpaRepository<Account, String> {
     boolean existsByUsername(String username);
     Optional<Account> findByUsername(String username);
 
+    @Query("select a from Account a, RoleAccount ra, Role r where a.id = ra.id.accountId and (:accountId is null or a.id <> :accountId) and a.phoneNumber = :phoneNumber " +
+            "and ra.id.roleCode = r.code and r.code <> :role")
+    List<Account> findByPhoneNumber(String phoneNumber, String role, String accountId);
+
     @Query(value = "select a.id as id, a.username as username, a.avatar_id as avatarId, a.phone_number as phoneNumber,  ra.role_code as roles, \n" +
             "d.name as district, a.gender as gender, a.department as department,\n" +
             "a.position as position, a.address as address, a.remark as remark,\n" +

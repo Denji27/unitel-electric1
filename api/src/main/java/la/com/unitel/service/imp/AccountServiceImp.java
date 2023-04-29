@@ -1,5 +1,6 @@
 package la.com.unitel.service.imp;
 
+import la.com.unitel.business.Constant;
 import la.com.unitel.entity.account.Account;
 import la.com.unitel.repository.AccountRepo;
 import la.com.unitel.service.AccountService;
@@ -37,6 +38,11 @@ public class AccountServiceImp implements AccountService {
     @Override
     public Account findByUsername(String username) {
         return accountRepo.findByUsername(username).orElse(null);
+    }
+
+    @Override
+    public Boolean isPhoneNumberExistedForEDL(String phoneNumber, String accountId) {
+        return accountRepo.findByPhoneNumber(phoneNumber, Constant.ENDUSER, accountId).size() > 0;
     }
 
     @Override

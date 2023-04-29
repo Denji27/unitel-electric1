@@ -7,26 +7,23 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "PROVINCE")
-public class Province implements Serializable {
-    @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "ID")
-    private String id;
+@Table(name = "ACCOUNT_CONTRACT")
+public class AccountContract implements Serializable {
+    @EmbeddedId
+    private AccountContractId id;
 
-    @Column(nullable = false)
-    private String name;
+    private String createdBy;
 
     @CreationTimestamp
     @JsonSerialize(using = LocalDateTimeSerializer.class)

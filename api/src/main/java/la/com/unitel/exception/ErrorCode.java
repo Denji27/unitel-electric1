@@ -44,4 +44,5 @@ public class ErrorCode {
     public static String CONSUMPTION_INVALID = "035";
     public static String FILE_UPLOAD_ERROR = "036";
     public static String CONTRACT_NAME_EXISTED = "038";
+    public static String PHONE_NUMBER_EXISTED = "039";
 }

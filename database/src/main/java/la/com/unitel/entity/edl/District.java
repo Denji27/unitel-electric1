@@ -1,10 +1,9 @@
-package la.com.unitel.entity.usage_payment;
+package la.com.unitel.entity.edl;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import la.com.unitel.entity.constant.Gender;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,46 +17,23 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "CONTRACT")
-public class Contract implements Serializable {
+@Table(name = "DISTRICT")
+public class District implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "ID")
-    private String id;  //waiting demo data
+    private String id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    /*@Column(nullable = false)
-    private String accountId;*/
-
-    @Column(nullable = false)
-    private String phoneNumber;
-
-    @Column(nullable = false)
-    private String districtId;
-
-    @Column(nullable = false)
-    private String provinceId;
-
-    @Column(nullable = false)
-    private String contractType;
-
-    @Column(unique = true, nullable = false)
-    private String meterCode;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    private String avatarId;
-    private String latitude;
-    private String longitude;
-    private Boolean isActive;
+    private String contactPhone;
+    private String contactName;
     private String address;
-    private String remark;
+    private Boolean isActive;
+    private String provinceId;
     private String createdBy;
-    private String updatedBy;
 
     @CreationTimestamp
     @JsonSerialize(using = LocalDateTimeSerializer.class)

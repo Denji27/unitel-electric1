@@ -1,9 +1,7 @@
 package la.com.unitel.service.imp;
 
-import la.com.unitel.entity.account.District;
-import la.com.unitel.repository.ContractTypeRepo;
+import la.com.unitel.entity.edl.District;
 import la.com.unitel.repository.DistrictRepo;
-import la.com.unitel.service.ContractTypeService;
 import la.com.unitel.service.DistrictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
