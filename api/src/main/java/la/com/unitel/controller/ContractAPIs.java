@@ -4,6 +4,7 @@ import la.com.unitel.business.contract.dto.CreateContractRequest;
 import la.com.unitel.business.contract.dto.UpdateContractRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -22,6 +23,11 @@ public interface ContractAPIs {
     ResponseEntity<?> updateContract(@PathVariable String contractId,
                                     @Valid @RequestBody UpdateContractRequest updateContractRequest,
                                     Principal principal);
+
+    @PostMapping("{contractId}/avatar/upload")
+    ResponseEntity<?> uploadAvatar(@PathVariable String contractId,
+                                   @RequestParam MultipartFile file,
+                                   Principal principal);
 
     @GetMapping("{contractId}")
     ResponseEntity<?> viewContractDetail(@PathVariable String contractId);

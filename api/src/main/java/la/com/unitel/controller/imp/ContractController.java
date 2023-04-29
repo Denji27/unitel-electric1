@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -28,6 +29,11 @@ public class ContractController implements ContractAPIs {
     @Override
     public ResponseEntity<?> updateContract(String contractId, UpdateContractRequest updateContractRequest, Principal principal) {
         return ResponseEntity.ok(iContract.onUpdateContract(contractId, updateContractRequest, principal));
+    }
+
+    @Override
+    public ResponseEntity<?> uploadAvatar(String contractId, MultipartFile file, Principal principal) {
+        return ResponseEntity.ok(iContract.onUploadAvatar(contractId, file, principal));
     }
 
     @Override

@@ -42,4 +42,6 @@ public class ErrorCode {
     public static String READER_INVALID = "033";
     public static String BILL_INVALID = "034";
     public static String CONSUMPTION_INVALID = "035";
+    public static String FILE_UPLOAD_ERROR = "036";
+    public static String CONTRACT_NAME_EXISTED = "038";
 }

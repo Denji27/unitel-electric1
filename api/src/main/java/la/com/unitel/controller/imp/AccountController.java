@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -31,6 +32,11 @@ public class AccountController implements AccountAPIs {
     }
 
     @Override
+    public ResponseEntity<?> uploadAvatar(String accountId, MultipartFile file, Principal principal) {
+        return ResponseEntity.ok(iAccount.onUploadAvatar(accountId, file, principal));
+    }
+
+    @Override
     public ResponseEntity<?> changeStatus(String accountId) {
         return ResponseEntity.ok(iAccount.onChangeAccountStatus(accountId));
     }
@@ -43,5 +49,10 @@ public class AccountController implements AccountAPIs {
     @Override
     public ResponseEntity<?> search(String input, int offset, int limit) {
         return ResponseEntity.ok(iAccount.onSearchAccount(input, PageRequest.of(offset, limit)));
+    }
+
+    @Override
+    public ResponseEntity<?> getAccountByRole(String role, int offset, int limit) {
+        return ResponseEntity.ok(iAccount.onGetReaderList(role, PageRequest.of(offset, limit)));
     }
 }

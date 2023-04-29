@@ -4,8 +4,12 @@ import la.com.unitel.business.BaseBusiness;
 import la.com.unitel.business.CommonResponse;
 import la.com.unitel.business.Constant;
 import la.com.unitel.business.Translator;
+import la.com.unitel.business.consumption.dto.HistoryRead;
 import la.com.unitel.business.consumption.dto.ReadConsumptionRequest;
 import la.com.unitel.business.consumption.dto.UpdateConsumptionRequest;
+import la.com.unitel.business.consumption.view.HistoryReadView;
+import la.com.unitel.business.contract.dto.ContractDetail;
+import la.com.unitel.business.contract.view.ContractDetailView;
 import la.com.unitel.entity.account.Account;
 import la.com.unitel.entity.account.MeterDevice;
 import la.com.unitel.entity.account.RoleAccount;
@@ -16,6 +20,9 @@ import la.com.unitel.entity.usage_payment.Contract;
 import la.com.unitel.exception.ErrorCode;
 import la.com.unitel.exception.ErrorCommon;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +30,7 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +62,7 @@ public class ConsumptionBusiness extends BaseBusiness implements IConsumption {
             throw new ErrorCommon(ErrorCode.CUSTOMER_IS_NOT_ENDUSER, Translator.toLocale(ErrorCode.CUSTOMER_IS_NOT_ENDUSER));
 
         Account reader = accountService.findByUsername(principal.getName());
-        if (reader == null)
+        if (reader == null || !reader.getIsActive())
             throw new ErrorCommon(ErrorCode.READER_INVALID, Translator.toLocale(ErrorCode.READER_INVALID));
 
         boolean isValidReaderContract = contractService.existsByIdReaderIdAndIdContractIdAndRole(reader.getId(), contract.getId(), Constant.READER);
@@ -129,6 +137,41 @@ public class ConsumptionBusiness extends BaseBusiness implements IConsumption {
 
     @Override
     public CommonResponse onUpdateConsumption(String consumptionId, UpdateConsumptionRequest updateConsumptionRequest, Principal principal) {
+        return null;
+    }
+
+    @Override
+    public CommonResponse onGetUnReadByReader(Pageable pageable, Principal principal) {
+        Account reader = accountService.findByUsername(principal.getName());
+        if (reader == null || !reader.getIsActive())
+            throw new ErrorCommon(ErrorCode.READER_INVALID, Translator.toLocale(ErrorCode.READER_INVALID));
+
+//        find unread list
+        List<String> contractIdList = contractService.findByIdReaderIdAndRole(reader.getId(), Constant.READER);
+        List<String> readList = consumptionService.findContractIdListByPeriodAndReadBy(util.getMonthCode(LocalDate.now()), reader.getUsername());
+        List<String> unreadList = contractIdList.parallelStream().filter(contractId -> !readList.contains(contractId)).collect(Collectors.toList());
+
+//        find contract detail of unread list
+        Page<ContractDetailView> views = contractService.findByIdInList(unreadList, ContractDetailView.class, pageable);
+        List<ContractDetail> collect = views.getContent().parallelStream().map(ContractDetail::generate).collect(Collectors.toList());
+        Page<ContractDetail> result = new PageImpl<>(collect, pageable, views.getTotalElements());
+        return generateSuccessResponse(UUID.randomUUID().toString(), result);
+    }
+
+    @Override
+    public CommonResponse onGetReadHistoryByReader(LocalDate fromDate, LocalDate toDate, Pageable pageable, Principal principal) {
+        Account reader = accountService.findByUsername(principal.getName());
+        if (reader == null || !reader.getIsActive())
+            throw new ErrorCommon(ErrorCode.READER_INVALID, Translator.toLocale(ErrorCode.READER_INVALID));
+
+        Page<HistoryReadView> views = consumptionService.findByCreatedAtAndReader(fromDate, toDate, reader.getUsername(), HistoryReadView.class, pageable);
+        List<HistoryRead> collect = views.getContent().parallelStream().map(HistoryRead::generate).collect(Collectors.toList());
+        Page<HistoryRead> result = new PageImpl<>(collect, pageable, views.getTotalElements());
+        return generateSuccessResponse(UUID.randomUUID().toString(), result);
+    }
+
+    @Override
+    public CommonResponse onConsumptionDetail(String consumptionId) {
         return null;
     }
 }

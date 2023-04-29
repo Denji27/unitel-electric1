@@ -23,8 +23,6 @@ public class CreateContractRequest extends BaseRequest {
     @NotBlank
     private String phoneNumber;
     @NotBlank
-    private String avatarId;
-    @NotBlank
     private String districtId;
     @NotBlank
     private String contractType;

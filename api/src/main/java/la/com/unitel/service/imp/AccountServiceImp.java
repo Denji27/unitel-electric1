@@ -48,4 +48,9 @@ public class AccountServiceImp implements AccountService {
     public <T> T findAccountDetail(String accountId, Class<T> type) {
         return accountRepo.findAccountDetail(accountId, type);
     }
+
+    @Override
+    public <T> Page<T> findAccountByRole(String role, Class<T> type, Pageable pageable) {
+        return accountRepo.findAccountByRole(role, type, pageable);
+    }
 }

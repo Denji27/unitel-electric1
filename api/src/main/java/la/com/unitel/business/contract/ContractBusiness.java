@@ -1,5 +1,7 @@
 package la.com.unitel.business.contract;
 
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import la.com.unitel.KeycloakUtil;
 import la.com.unitel.business.*;
 import la.com.unitel.business.account.dto.AccountDetail;
 import la.com.unitel.business.account.view.AccountDetailView;
@@ -21,9 +23,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +61,13 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         if (device == null)
             throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
 
-        //TODO validate readerId & contractId
+        if (contractService.existsByMeterCode(createContractRequest.getDeviceId()))
+            throw new ErrorCommon(ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));
+
+        if (contractService.existsByContractName(createContractRequest.getName()))
+            throw new ErrorCommon(ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));
+
+        //TODO validate readerId & contractId active
 
         UserRepresentation keycloakUser = keycloakUtil.createUser(createContractRequest.getUsername(), createContractRequest.getPassword(),
                 util.toMsisdn(createContractRequest.getPhoneNumber()), district.getName(), createContractRequest.getContractType());
@@ -68,9 +78,9 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         account.setId(keycloakUser.getId());
         account.setUsername(createContractRequest.getUsername());
         account.setPhoneNumber(util.toMsisdn(createContractRequest.getPhoneNumber()));
-        account.setAvatarId(createContractRequest.getAvatarId());
         account.setDistrictId(createContractRequest.getDistrictId());
         account.setGender(Gender.findByName(createContractRequest.getGender()));
+        account.setAvatarId(account.getGender().equals(Gender.MALE) ? Constant.AVATAR_MALE_DEFAULT : Constant.AVATAR_FEMALE_DEFAULT);
         account.setAddress(createContractRequest.getAddress());
         account.setRemark(createContractRequest.getRemark());
         account.setCreatedBy(principal.getName());
@@ -143,7 +153,6 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         account.setPhoneNumber(util.toMsisdn(updateContractRequest.getPhoneNumber()));
         account.setDistrictId(updateContractRequest.getDistrictId());
         account.setGender(Gender.findByName(updateContractRequest.getGender()));
-        account.setAvatarId(updateContractRequest.getAvatarId());
         if (updateContractRequest.getAddress() != null) account.setAddress(updateContractRequest.getAddress());
         if (updateContractRequest.getRemark() != null) account.setRemark(updateContractRequest.getRemark());
         account.setUpdatedBy(principal.getName());
@@ -162,6 +171,44 @@ public class ContractBusiness extends BaseBusiness implements IContract {
         contract = contractService.save(contract);
 
         return generateSuccessResponse(updateContractRequest.getRequestId(),
+                ContractDetail.generate(contractService.findContractDetail(contract.getId(), ContractDetailView.class)));
+    }
+
+    @Override
+    public CommonResponse onUploadAvatar(String contractId, MultipartFile file, Principal principal) {
+        Contract contract = contractService.findById(contractId);
+        if (contract == null)
+            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+
+        Account account = accountService.findById(contract.getAccountId());
+        if (account == null)
+            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+
+        String fileId = null;
+
+        try {
+            fileId = storageService.uploadFile(Constant.ELECTRIC, file, CannedAccessControlList.PublicRead);
+        } catch (IOException e) {
+            log.error("Upload file error due to ", e);
+        }
+
+        if (fileId == null)
+            throw new ErrorCommon(ErrorCode.FILE_UPLOAD_ERROR, Translator.toLocale(ErrorCode.FILE_UPLOAD_ERROR));
+
+        if (account.getAvatarId() != null) {
+            log.info("Delete old avatar");
+            String[] split = account.getAvatarId().split("/");
+            storageService.deleteFile(Constant.ELECTRIC, split[split.length - 1]);
+        }
+
+        account.setAvatarId("https://s3.mytel.com.mm/electric/" + fileId);
+        account.setUpdatedBy(principal.getName());
+        account = accountService.save(account);
+
+        contract.setUpdatedBy(principal.getName());
+        contract = contractService.save(contract);
+
+        return generateSuccessResponse(UUID.randomUUID().toString(),
                 ContractDetail.generate(contractService.findContractDetail(contract.getId(), ContractDetailView.class)));
     }
 

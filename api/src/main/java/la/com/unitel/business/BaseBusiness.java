@@ -1,5 +1,6 @@
 package la.com.unitel.business;
 
+import com.mytel.b2b.service.StorageService;
 import la.com.unitel.Util;
 import la.com.unitel.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class BaseBusiness {
     public BillService billService;
     @Autowired
     public TransactionService transactionService;
+
+    @Autowired
+    public StorageService storageService;
 
     public CommonResponse generateSuccessResponse(String requestId, Object result) {
         CommonResponse commonResponse = new CommonResponse("00000", "Success", result);

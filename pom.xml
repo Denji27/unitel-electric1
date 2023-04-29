@@ -7,6 +7,7 @@
         <module>database</module>
         <module>api</module>
         <module>util</module>
+        <module>keycloak</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

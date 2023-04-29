@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -28,6 +29,11 @@ public class DeviceController implements DeviceAPIs {
     @Override
     public ResponseEntity<?> updateDevice(String deviceId, UpdateDeviceRequest updateDeviceRequest, Principal principal) {
         return ResponseEntity.ok(iDevice.onUpdateDevice(deviceId, updateDeviceRequest, principal));
+    }
+
+    @Override
+    public ResponseEntity<?> uploadImage(String deviceId, MultipartFile file, Principal principal) {
+        return ResponseEntity.ok(iDevice.uploadImageInFirstTime(deviceId, file, principal));
     }
 
     @Override

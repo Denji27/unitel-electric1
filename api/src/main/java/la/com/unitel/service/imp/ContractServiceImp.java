@@ -46,6 +46,11 @@ public class ContractServiceImp implements ContractService {
     }
 
     @Override
+    public <T> Page<T> findByIdInList(List<String> contractIdList, Class<T> type, Pageable pageable) {
+        return contractRepo.findContractDetailByIdIn(contractIdList, type, pageable);
+    }
+
+    @Override
     public <T> T findContractDetail(String contractId, Class<T> type) {
         return contractRepo.findContractDetail(contractId, type);
     }
@@ -58,5 +63,20 @@ public class ContractServiceImp implements ContractService {
     @Override
     public List<String> findByIdContractIdAndRole(String contractId, String role) {
         return readerContractMapRepo.findByIdContractIdAndRole(contractId, role);
+    }
+
+    @Override
+    public List<String> findByIdReaderIdAndRole(String readerId, String role) {
+        return readerContractMapRepo.findByIdReaderIdAndRole(readerId, role);
+    }
+
+    @Override
+    public boolean existsByMeterCode(String meterCode) {
+       return contractRepo.existsByMeterCode(meterCode);
+    }
+
+    @Override
+    public boolean existsByContractName(String contractName) {
+        return contractRepo.existsByName(contractName);
     }
 }

@@ -36,4 +36,8 @@ public interface AccountRepo extends JpaRepository<Account, String> {
             "from account a, (select account_id, IFNULL(GROUP_CONCAT(role_code order by role_code SEPARATOR ', '), '')  AS role_code from role_account group by account_id) ra, district d \n" +
             "where a.id = :accountId and a.id = ra.account_id and a.district_id = d.id", nativeQuery = true)
     <T> T findAccountDetail(String accountId, Class<T> type);
+
+    @Query("select a.id as id, a.username as username, a.avatarId as avatarId " +
+            "from Account a, RoleAccount ra, Role r where a.id = ra.id.accountId and ra.id.roleCode = r.code and r.name = :role")
+    <T> Page<T> findAccountByRole(String role, Class<T> type, Pageable pageable);
 }

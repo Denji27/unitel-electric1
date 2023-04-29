@@ -18,4 +18,5 @@ public interface AccountService {
     Account findByUsername(String username);
     <T> Page<T> searchAccountDetail(String input, Class<T> type, Pageable pageable);
     <T> T findAccountDetail(String accountId, Class<T> type);
+    <T> Page<T> findAccountByRole(String role, Class<T> type, Pageable pageable);
 }

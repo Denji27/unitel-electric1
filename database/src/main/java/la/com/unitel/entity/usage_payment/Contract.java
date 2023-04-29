@@ -40,7 +40,7 @@ public class Contract implements Serializable {
     @Column(nullable = false)
     private String contractType;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String meterCode;
 
     private String latitude;
