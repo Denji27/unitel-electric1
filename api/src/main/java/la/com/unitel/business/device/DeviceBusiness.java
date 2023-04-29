@@ -1,6 +1,9 @@
 package la.com.unitel.business.device;
 
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import la.com.unitel.business.*;
+import la.com.unitel.business.account.dto.AccountDetail;
+import la.com.unitel.business.account.view.AccountDetailView;
 import la.com.unitel.business.contract.IContract;
 import la.com.unitel.business.contract.dto.CreateContractRequest;
 import la.com.unitel.business.contract.dto.UpdateContractRequest;
@@ -17,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.UUID;
 
@@ -60,6 +65,31 @@ public class DeviceBusiness extends BaseBusiness implements IDevice {
         device = deviceService.save(device);
 
         return generateSuccessResponse(updateDeviceRequest.getRequestId(), device);
+    }
+
+    @Override
+    public CommonResponse uploadImageInFirstTime(String deviceId, MultipartFile file, Principal principal) {
+        MeterDevice device = deviceService.findById(deviceId);
+        if (device == null || device.getImageId() != null)
+            throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
+
+        String fileId = null;
+
+        try {
+            fileId = storageService.uploadFile(Constant.ELECTRIC, file, CannedAccessControlList.PublicRead);
+        } catch (IOException e) {
+            log.error("Upload file error due to ", e);
+        }
+
+        if (fileId == null)
+            throw new ErrorCommon(ErrorCode.FILE_UPLOAD_ERROR, Translator.toLocale(ErrorCode.FILE_UPLOAD_ERROR));
+
+
+        device.setImageId("https://s3.mytel.com.mm/electric/" + fileId);
+        device.setUpdatedBy(principal.getName());
+        device = deviceService.save(device);
+        return generateSuccessResponse(UUID.randomUUID().toString(), device);
+
     }
 
     @Override

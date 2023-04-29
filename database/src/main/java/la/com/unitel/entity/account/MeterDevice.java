@@ -32,6 +32,7 @@ public class MeterDevice implements Serializable {
     private String contractId;
     private String description;
     private String brand;
+    private String imageId;
     private Boolean isActive;
     private Integer currentUnit;
     private Integer maximumUnit;

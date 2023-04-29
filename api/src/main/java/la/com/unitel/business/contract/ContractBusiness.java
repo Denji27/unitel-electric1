@@ -1,6 +1,7 @@
 package la.com.unitel.business.contract;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import la.com.unitel.KeycloakUtil;
 import la.com.unitel.business.*;
 import la.com.unitel.business.account.dto.AccountDetail;
 import la.com.unitel.business.account.view.AccountDetailView;
@@ -61,6 +62,9 @@ public class ContractBusiness extends BaseBusiness implements IContract {
             throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
 
         if (contractService.existsByMeterCode(createContractRequest.getDeviceId()))
+            throw new ErrorCommon(ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));
+
+        if (contractService.existsByContractName(createContractRequest.getName()))
             throw new ErrorCommon(ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));
 
         //TODO validate readerId & contractId active

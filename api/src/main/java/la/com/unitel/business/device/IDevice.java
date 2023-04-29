@@ -4,6 +4,7 @@ import la.com.unitel.business.CommonResponse;
 import la.com.unitel.business.device.dto.CreateDeviceRequest;
 import la.com.unitel.business.device.dto.UpdateDeviceRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -14,6 +15,7 @@ import java.security.Principal;
 public interface IDevice {
     CommonResponse onCreateDevice(CreateDeviceRequest createDeviceRequest, Principal principal);
     CommonResponse onUpdateDevice(String deviceId, UpdateDeviceRequest updateDeviceRequest, Principal principal);
+    CommonResponse uploadImageInFirstTime(String deviceId, MultipartFile file, Principal principal);
     CommonResponse onViewDeviceDetail(String deviceId);
     CommonResponse onSearchDevice(String input, Pageable pageable);
 }

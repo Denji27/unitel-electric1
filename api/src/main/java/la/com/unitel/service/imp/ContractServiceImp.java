@@ -74,4 +74,9 @@ public class ContractServiceImp implements ContractService {
     public boolean existsByMeterCode(String meterCode) {
        return contractRepo.existsByMeterCode(meterCode);
     }
+
+    @Override
+    public boolean existsByContractName(String contractName) {
+        return contractRepo.existsByName(contractName);
+    }
 }

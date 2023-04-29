@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    la.com.unitel.KeycloakConfig,\
+    la.com.unitel.KeycloakUtilImp

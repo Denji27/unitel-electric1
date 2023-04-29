@@ -18,5 +18,4 @@ public interface IConsumption {
     CommonResponse onGetUnReadByReader(Pageable pageable, Principal principal);
     CommonResponse onGetReadHistoryByReader(LocalDate fromDate, LocalDate toDate, Pageable pageable, Principal principal);
     CommonResponse onConsumptionDetail(String consumptionId);
-
 }

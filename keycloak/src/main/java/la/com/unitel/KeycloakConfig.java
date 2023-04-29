@@ -1,4 +1,4 @@
-package la.com.unitel.config.keycloak;
+package la.com.unitel;
 
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;

@@ -4,6 +4,7 @@ import la.com.unitel.business.device.dto.CreateDeviceRequest;
 import la.com.unitel.business.device.dto.UpdateDeviceRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -20,8 +21,13 @@ public interface DeviceAPIs {
 
     @PostMapping("{deviceId}")
     ResponseEntity<?> updateDevice(@PathVariable String deviceId,
-                                    @Valid @RequestBody UpdateDeviceRequest updateDeviceRequest,
-                                    Principal principal);
+                                   @Valid @RequestBody UpdateDeviceRequest updateDeviceRequest,
+                                   Principal principal);
+
+    @PostMapping("{deviceId}/image/upload")
+    ResponseEntity<?> uploadImage(@PathVariable String deviceId,
+                                  @RequestParam MultipartFile file,
+                                  Principal principal);
 
     @GetMapping("{deviceId}")
     ResponseEntity<?> viewDeviceDetail(@PathVariable String deviceId);

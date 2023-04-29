@@ -25,12 +25,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-admin-client</artifactId>
-            <version>18.0.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
@@ -50,6 +44,12 @@
             <groupId>com.mytel.b2b</groupId>
             <artifactId>s3-storage-connector</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>la.com.unitel</groupId>
+            <artifactId>keycloak</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
