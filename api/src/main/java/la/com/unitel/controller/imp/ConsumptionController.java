@@ -49,6 +49,6 @@ public class ConsumptionController implements ConsumptionAPIs {
 
     @Override
     public ResponseEntity<?> getConsumptionByContractId(String contractId, LocalDate fromDate, LocalDate toDate, int page, int size) {
-        return ResponseEntity.ok(iConsumption.onGetReadHistoryByReader(contractId, fromDate, toDate, page, size));
+        return ResponseEntity.ok(iConsumption.onGetConsumptionHistoryByContractId(contractId, fromDate, toDate, page, size));
     }
 }

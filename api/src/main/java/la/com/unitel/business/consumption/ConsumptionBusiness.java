@@ -6,6 +6,7 @@ import la.com.unitel.business.Constant;
 import la.com.unitel.business.Translator;
 import la.com.unitel.business.consumption.dto.HistoryRead;
 import la.com.unitel.business.consumption.dto.ReadConsumptionRequest;
+import la.com.unitel.business.consumption.dto.StatisticResponse;
 import la.com.unitel.business.consumption.dto.UpdateConsumptionRequest;
 import la.com.unitel.business.consumption.view.HistoryReadView;
 import la.com.unitel.business.contract.dto.ContractDetail;
@@ -29,11 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -199,5 +199,28 @@ public class ConsumptionBusiness extends BaseBusiness implements IConsumption {
 
         Page<Consumption> histories = consumptionService.findConsumptionByContractId(contractId, fromDate, toDate, page, size);
         return generateSuccessResponse(UUID.randomUUID().toString(), histories);
+    }
+
+    @Override
+    public CommonResponse onGetStatistic(String contractId, LocalDate fromDate, LocalDate toDate) {
+        List<StatisticResponse.StatisticPayload> usageUnitList = new ArrayList<>();
+        List<StatisticResponse.StatisticPayload> expenseList = new ArrayList<>();
+        for (String month : new DateFormatSymbols().getMonths()) {
+            StatisticResponse.StatisticPayload usagePayload = StatisticResponse.StatisticPayload.builder()
+                    .key(month)
+                    .value(String.valueOf(new Random().nextInt(300)))
+                    .type("WATER")
+                    .build();
+
+            StatisticResponse.StatisticPayload expensePayload = StatisticResponse.StatisticPayload.builder()
+                    .key(month)
+                    .value(String.valueOf(new Random().nextInt(300)))
+                    .type("WATER")
+                    .build();
+
+            usageUnitList.add(usagePayload);
+            expenseList.add(expensePayload);
+        }
+        return generateSuccessResponse(UUID.randomUUID().toString(), new StatisticResponse(usageUnitList, expenseList));
     }
 }

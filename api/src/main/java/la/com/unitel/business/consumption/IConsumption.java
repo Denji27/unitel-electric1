@@ -19,4 +19,5 @@ public interface IConsumption {
     CommonResponse onGetReadHistoryByReader(String readerUsername, LocalDate fromDate, LocalDate toDate, int page, int size);
     CommonResponse onConsumptionDetail(String consumptionId);
     CommonResponse onGetConsumptionHistoryByContractId(String contractId, LocalDate fromDate, LocalDate toDate, int page, int size);
+    CommonResponse onGetStatistic(String contractId, LocalDate fromDate, LocalDate toDate);
 }
