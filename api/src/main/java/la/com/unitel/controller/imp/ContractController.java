@@ -42,7 +42,7 @@ public class ContractController implements ContractAPIs {
     }
 
     @Override
-    public ResponseEntity<?> search(String input, int offset, int limit) {
-        return ResponseEntity.ok(iContract.onSearchContract(input, PageRequest.of(offset, limit)));
+    public ResponseEntity<?> search(String input, int page, int size) {
+        return ResponseEntity.ok(iContract.onSearchContract(input, PageRequest.of(page, size)));
     }
 }

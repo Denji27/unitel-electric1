@@ -38,12 +38,17 @@ public class ConsumptionController implements ConsumptionAPIs {
     }
 
     @Override
-    public ResponseEntity<?> getUnreadByReader(String reader, int offset, int limit) {
-        return ResponseEntity.ok(iConsumption.onGetUnReadByReader(reader, offset, limit));
+    public ResponseEntity<?> getUnreadByReader(String reader, int page, int size) {
+        return ResponseEntity.ok(iConsumption.onGetUnReadByReader(reader, page, size));
     }
 
     @Override
     public ResponseEntity<?> getHistoryByReader(String reader, LocalDate fromDate, LocalDate toDate, int page, int size) {
         return ResponseEntity.ok(iConsumption.onGetReadHistoryByReader(reader, fromDate, toDate, page, size));
+    }
+
+    @Override
+    public ResponseEntity<?> getConsumptionByContractId(String contractId, LocalDate fromDate, LocalDate toDate, int page, int size) {
+        return ResponseEntity.ok(iConsumption.onGetReadHistoryByReader(contractId, fromDate, toDate, page, size));
     }
 }

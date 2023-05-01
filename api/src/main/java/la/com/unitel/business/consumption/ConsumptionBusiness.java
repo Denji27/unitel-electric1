@@ -190,4 +190,14 @@ public class ConsumptionBusiness extends BaseBusiness implements IConsumption {
 
         return generateSuccessResponse(UUID.randomUUID().toString(), consumption);
     }
+
+    @Override
+    public CommonResponse onGetConsumptionHistoryByContractId(String contractId, LocalDate fromDate, LocalDate toDate, int page, int size) {
+        Contract contract = contractService.findById(contractId);
+        if (contract == null || !contract.getIsActive())
+            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+
+        Page<Consumption> histories = consumptionService.findConsumptionByContractId(contractId, fromDate, toDate, page, size);
+        return generateSuccessResponse(UUID.randomUUID().toString(), histories);
+    }
 }

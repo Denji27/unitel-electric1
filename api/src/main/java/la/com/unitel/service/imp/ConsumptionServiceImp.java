@@ -37,11 +37,6 @@ public class ConsumptionServiceImp implements ConsumptionService {
         return consumptionRepo.findByContractIdAndPeriod(contractId, period).orElse(null);
     }
 
-    /*@Override
-    public List<Consumption> findByReadByAndStatusAndPeriodTillNow(String reader, String period, ConsumptionStatus status) {
-        return consumptionRepo.findByReadByAndStatusAndPeriodLessThanEqual(reader, status, period);
-    }*/
-
     @Override
     public List<String> findContractIdListByPeriodAndReadBy(String period, String reader) {
         return consumptionRepo.findContractIdListByPeriodAndReadBy(period, reader);
@@ -63,12 +58,11 @@ public class ConsumptionServiceImp implements ConsumptionService {
     }
 
     @Override
-    public List<String> findContractIdListByPeriodLessThanAndReadBy(String period, String reader) {
-        return consumptionRepo.findContractIdListByPeriodLessThanAndReadBy(period, reader);
-    }
-
-    public <T> Page<T> findByCreatedAtAndReader(LocalDate fromDate, LocalDate toDate, String reader, Class<T> type, Pageable pageable) {
-        return consumptionRepo.findByCreatedAtAndReader(fromDate, toDate, reader, type, pageable);
+    public Page<Consumption> findConsumptionByContractId(String contractId, LocalDate fromDate, LocalDate toDate, int page, int size) {
+        if (toDate == null) toDate = LocalDate.now().plusDays(1);
+        if (fromDate == null) fromDate = toDate.minusDays(2);
+        return consumptionRepo.findByContractIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqualAndStatus(
+                contractId, fromDate, toDate, ConsumptionStatus.READ, PageRequest.of(page, size, Sort.by("createdAt").descending()));
     }
 
     @Override

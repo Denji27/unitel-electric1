@@ -42,7 +42,7 @@ public class DeviceController implements DeviceAPIs {
     }
 
     @Override
-    public ResponseEntity<?> search(String input, int offset, int limit) {
-        return ResponseEntity.ok(iDevice.onSearchDevice(input, PageRequest.of(offset, limit)));
+    public ResponseEntity<?> search(String input, int page, int size) {
+        return ResponseEntity.ok(iDevice.onSearchDevice(input, PageRequest.of(page, size)));
     }
 }

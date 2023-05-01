@@ -18,4 +18,5 @@ public interface IConsumption {
     CommonResponse onGetUnReadByReader(String readerUsername, int page, int size);
     CommonResponse onGetReadHistoryByReader(String readerUsername, LocalDate fromDate, LocalDate toDate, int page, int size);
     CommonResponse onConsumptionDetail(String consumptionId);
+    CommonResponse onGetConsumptionHistoryByContractId(String contractId, LocalDate fromDate, LocalDate toDate, int page, int size);
 }

@@ -49,13 +49,13 @@ public class AccountController implements AccountAPIs {
     }
 
     @Override
-    public ResponseEntity<?> search(String input, int offset, int limit) {
-        return ResponseEntity.ok(iAccount.onSearchAccount(input, PageRequest.of(offset, limit)));
+    public ResponseEntity<?> search(String input, int page, int size) {
+        return ResponseEntity.ok(iAccount.onSearchAccount(input, PageRequest.of(page, size)));
     }
 
     @Override
-    public ResponseEntity<?> getAccountByRole(String role, int offset, int limit) {
-        return ResponseEntity.ok(iAccount.onGetReaderList(role, PageRequest.of(offset, limit)));
+    public ResponseEntity<?> getAccountByRole(String role, int page, int size) {
+        return ResponseEntity.ok(iAccount.onGetReaderList(role, PageRequest.of(page, size)));
     }
 
     @Override

@@ -40,17 +40,17 @@ public class BillController implements BillAPIs {
     }
 
     @Override
-    public ResponseEntity<?> search(BillStatus status, LocalDate fromDate, LocalDate toDate, String input, int offset, int limit) {
-        return ResponseEntity.ok(iBill.onSearchBill(status, fromDate, toDate, input, PageRequest.of(offset, limit)));
+    public ResponseEntity<?> search(BillStatus status, LocalDate fromDate, LocalDate toDate, String input, int page, int size) {
+        return ResponseEntity.ok(iBill.onSearchBill(status, fromDate, toDate, input, PageRequest.of(page, size)));
     }
 
     @Override
-    public ResponseEntity<?> getUnpaidBillByCashier(String cashier, int offset, int limit) {
-        return ResponseEntity.ok(iBill.onGetUnPaidBillByCashier(cashier, offset, limit));
+    public ResponseEntity<?> getUnpaidBillByCashier(String cashier, int page, int size) {
+        return ResponseEntity.ok(iBill.onGetUnPaidBillByCashier(cashier, page, size));
     }
 
     @Override
-    public ResponseEntity<?> getUnpaidBillByContract(String contractId, int offset, int limit) {
-        return ResponseEntity.ok(iBill.onGetUnPaidBillByContract(contractId, offset, limit));
+    public ResponseEntity<?> getUnpaidBillByContract(String contractId, int page, int size) {
+        return ResponseEntity.ok(iBill.onGetUnPaidBillByContract(contractId, page, size));
     }
 }

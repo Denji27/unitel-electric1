@@ -20,7 +20,11 @@ public interface ConsumptionRepo extends JpaRepository<Consumption, String> {
     Optional<Consumption> findByContractIdAndPeriod(String contractId, String period);
 
     Page<Consumption> findByReadByAndStatusAndPeriodLessThanEqual(String reader, ConsumptionStatus status, String period, Pageable pageable);
-    Page<Consumption> findByReadByAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqualAndStatus(String reader, LocalDate fromDate, LocalDate toDate, ConsumptionStatus status, Pageable pageable);
+    Page<Consumption> findByReadByAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqualAndStatus(
+            String reader, LocalDate fromDate, LocalDate toDate, ConsumptionStatus status, Pageable pageable);
+
+    Page<Consumption> findByContractIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqualAndStatus(
+            String contractId, LocalDate fromDate, LocalDate toDate, ConsumptionStatus status, Pageable pageable);
 
     @Query("select c.contractId from Consumption c where c.period = :period and c.readBy = :reader")
     List<String> findContractIdListByPeriodAndReadBy(String period, String reader);
