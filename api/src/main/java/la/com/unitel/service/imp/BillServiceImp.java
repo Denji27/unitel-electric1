@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @author : Tungct
@@ -30,8 +31,18 @@ public class BillServiceImp implements BillService {
     }
 
     @Override
+    public List<Bill> saveAll(List<Bill> bills) {
+        return billRepo.saveAll(bills);
+    }
+
+    @Override
     public Bill findById(String billId) {
         return billRepo.findById(billId).orElse(null);
+    }
+
+    @Override
+    public Boolean existsByTransactionId(String transactionId) {
+        return billRepo.existsByTransactionId(transactionId);
     }
 
     @Override
@@ -42,5 +53,10 @@ public class BillServiceImp implements BillService {
     @Override
     public Page<Bill> findUnPaidBillByCashier(String cashier, int page, int size) {
         return billRepo.findByCashierAndStatus(cashier, BillStatus.UNPAID, PageRequest.of(page, size, Sort.by("createdAt").ascending()));
+    }
+
+    @Override
+    public Page<Bill> findUnPaidBillByContractId(String contractId, int page, int size) {
+        return billRepo.findByContractIdAndStatus(contractId, BillStatus.UNPAID, PageRequest.of(page, size, Sort.by("createdAt").ascending()));
     }
 }

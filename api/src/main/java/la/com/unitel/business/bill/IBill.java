@@ -1,10 +1,11 @@
 package la.com.unitel.business.bill;
 
 import la.com.unitel.business.CommonResponse;
+import la.com.unitel.business.bill.dto.CheckBillRequest;
+import la.com.unitel.business.bill.dto.PayBillRequest;
 import la.com.unitel.entity.constant.BillStatus;
 import org.springframework.data.domain.Pageable;
 
-import java.security.Principal;
 import java.time.LocalDate;
 
 /**
@@ -13,6 +14,9 @@ import java.time.LocalDate;
  **/
 public interface IBill {
     CommonResponse onViewBillDetail(String billId);
+    CommonResponse onViewBillInBatch(CheckBillRequest checkBillRequest);
+    CommonResponse onPayBill(PayBillRequest payBillRequest);
     CommonResponse onSearchBill(BillStatus status, LocalDate fromDate, LocalDate toDate, String input, Pageable pageable);
     CommonResponse onGetUnPaidBillByCashier(String cashierUsername, int page, int size);
+    CommonResponse onGetUnPaidBillByContract(String contractId, int page, int size);
 }

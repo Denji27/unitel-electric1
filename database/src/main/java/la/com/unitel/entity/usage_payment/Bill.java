@@ -52,6 +52,12 @@ public class Bill implements Serializable {
     private Integer overDate;
     private String createdBy;
     private String updatedBy;
+    private String paidBy;
+    private String remark;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime paidAt;
 
     @CreationTimestamp
     @JsonSerialize(using = LocalDateTimeSerializer.class)

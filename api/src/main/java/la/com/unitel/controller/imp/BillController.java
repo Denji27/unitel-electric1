@@ -1,6 +1,8 @@
 package la.com.unitel.controller.imp;
 
 import la.com.unitel.business.bill.IBill;
+import la.com.unitel.business.bill.dto.CheckBillRequest;
+import la.com.unitel.business.bill.dto.PayBillRequest;
 import la.com.unitel.controller.BillAPIs;
 import la.com.unitel.controller.ConsumptionAPIs;
 import la.com.unitel.entity.constant.BillStatus;
@@ -27,6 +29,17 @@ public class BillController implements BillAPIs {
     }
 
     @Override
+    public ResponseEntity<?> viewBillDetailInBatch(CheckBillRequest checkBillRequest) {
+        return ResponseEntity.ok(iBill.onViewBillInBatch(checkBillRequest));
+    }
+
+    @Override
+    public ResponseEntity<?> payBill(PayBillRequest payBillRequest) {
+        return ResponseEntity.ok(iBill.onPayBill(payBillRequest));
+
+    }
+
+    @Override
     public ResponseEntity<?> search(BillStatus status, LocalDate fromDate, LocalDate toDate, String input, int offset, int limit) {
         return ResponseEntity.ok(iBill.onSearchBill(status, fromDate, toDate, input, PageRequest.of(offset, limit)));
     }
@@ -34,5 +47,10 @@ public class BillController implements BillAPIs {
     @Override
     public ResponseEntity<?> getUnpaidBillByCashier(String cashier, int offset, int limit) {
         return ResponseEntity.ok(iBill.onGetUnPaidBillByCashier(cashier, offset, limit));
+    }
+
+    @Override
+    public ResponseEntity<?> getUnpaidBillByContract(String contractId, int offset, int limit) {
+        return ResponseEntity.ok(iBill.onGetUnPaidBillByContract(contractId, offset, limit));
     }
 }

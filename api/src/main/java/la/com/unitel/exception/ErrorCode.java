@@ -48,5 +48,6 @@ public class ErrorCode {
     public static String WALLET_ACCOUNT_INVALID = "040";
     public static String LAST_MONTH_CONSUMPTION_NOT_FOUND = "041";
     public static String CASHIER_INVALID = "042";
+    public static String SERVICE_INVALID = "043";
 
 }

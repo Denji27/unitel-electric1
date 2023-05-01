@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
  **/
 public interface BillDetailView {
     String getId();
-    String getUsername();
     String getPhoneNumber();
     String getAvatarId();
     BillStatus getStatus();
