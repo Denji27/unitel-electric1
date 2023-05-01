@@ -26,7 +26,7 @@ public class ReadConsumptionRequest extends BaseRequest {
     @NotBlank
     private String imageId;
 
-    private Boolean isRollOver;
+//    private Boolean isRollOver;
     private Boolean isMeterReplace;
     private Integer stopUnit;
     private String remark;

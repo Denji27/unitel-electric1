@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import la.com.unitel.entity.constant.ConsumptionStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -45,6 +46,9 @@ public class Consumption implements Serializable {
     @Column(nullable = false)
     private String imageId;
 
+    @Enumerated(EnumType.STRING)
+    private ConsumptionStatus status;
+
     private String latitude;
     private String longitude;
     private Integer oldMeterUnit;
@@ -53,6 +57,10 @@ public class Consumption implements Serializable {
     private Integer meterMaxUnit;
     private Boolean isMeterReplace;
     private Integer stopUnit;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime readAt;
 
     @CreationTimestamp
     @JsonSerialize(using = LocalDateTimeSerializer.class)

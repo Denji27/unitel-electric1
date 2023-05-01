@@ -37,7 +37,7 @@ public class ErrorCode {
     public static String DEVICE_EXISTED = "028";
     public static String DEVICE_INVALID = "029";
     public static String CUSTOMER_IS_NOT_ENDUSER = "030";
-    public static String CONSUMPTION_ALREADY_READ = "031";
+    public static String CONSUMPTION_ALREADY_READ_OR_NOT_FOUND = "031";
     public static String THIS_MONTH_CONSUMPTION_LESS_THAN_LAST_MONTH = "032";
     public static String READER_INVALID = "033";
     public static String BILL_INVALID = "034";
@@ -46,4 +46,6 @@ public class ErrorCode {
     public static String CONTRACT_NAME_EXISTED = "038";
     public static String PHONE_NUMBER_EXISTED = "039";
     public static String WALLET_ACCOUNT_INVALID = "040";
+    public static String LAST_MONTH_CONSUMPTION_NOT_FOUND = "041";
+
 }
