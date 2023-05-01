@@ -47,5 +47,6 @@ public class ErrorCode {
     public static String PHONE_NUMBER_EXISTED = "039";
     public static String WALLET_ACCOUNT_INVALID = "040";
     public static String LAST_MONTH_CONSUMPTION_NOT_FOUND = "041";
+    public static String CASHIER_INVALID = "042";
 
 }

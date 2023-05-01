@@ -1,5 +1,6 @@
 package la.com.unitel.controller;
 
+import la.com.unitel.business.CommonResponse;
 import la.com.unitel.entity.constant.BillStatus;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
  * @author : Tungct
  * @since : 4/15/2023, Sat
  **/
-@RequestMapping("consumption")
+@RequestMapping("bill")
 @Validated
 public interface BillAPIs {
 
@@ -28,4 +29,9 @@ public interface BillAPIs {
                              @RequestParam(required = false) String input,
                              @RequestParam(defaultValue = "0", required = false) int offset,
                              @RequestParam(defaultValue = "10", required = false) int limit);
+
+    @GetMapping("{cashier}/unpaid")
+    ResponseEntity<?> getUnpaidBillByCashier(@PathVariable String cashier,
+                                             @RequestParam(defaultValue = "0", required = false) int offset,
+                                             @RequestParam(defaultValue = "10", required = false) int limit);
 }

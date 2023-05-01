@@ -15,4 +15,5 @@ public interface BillService {
     Bill save(Bill bill);
     Bill findById(String billId);
     <T> Page<T> searchBill(BillStatus status, LocalDate fromDate, LocalDate toDate, String input, Class<T> type, Pageable pageable);
+    Page<Bill> findUnPaidBillByCashier(String cashier, int page, int size);
 }

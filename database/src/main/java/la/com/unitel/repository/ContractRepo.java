@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author : Tungct
@@ -41,4 +42,7 @@ public interface ContractRepo extends JpaRepository<Contract, String> {
             "from Contract c, District d , Province p \n" +
             "WHERE c.districtId = d.id and c.provinceId = p.id and c.id in :contractIdList")
     <T> Page<T> findContractDetailByIdIn(List<String> contractIdList, Class<T> type, Pageable pageable);
+
+    @Query("select a.username From Contract c, ReaderContractMap rc, Account a where c.id = rc.id.contractId and rc.role = :role and a.id = rc.id.readerId")
+    Optional<String> findReaderOrCashierByContractId(String contractId, String role);
 }

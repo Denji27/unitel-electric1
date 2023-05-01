@@ -7,6 +7,7 @@ import la.com.unitel.repository.ContractRepo;
 import la.com.unitel.repository.ReaderContractMapRepo;
 import la.com.unitel.service.ConsumptionService;
 import la.com.unitel.service.ContractService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import java.util.List;
  * @since : 4/12/2023, Wed
  **/
 @Service
+@Slf4j
 public class ContractServiceImp implements ContractService {
     @Autowired
     private ContractRepo contractRepo;
@@ -72,11 +74,21 @@ public class ContractServiceImp implements ContractService {
 
     @Override
     public boolean existsByMeterCode(String meterCode) {
-       return contractRepo.existsByMeterCode(meterCode);
+        return contractRepo.existsByMeterCode(meterCode);
     }
 
     @Override
     public boolean existsByContractName(String contractName) {
         return contractRepo.existsByName(contractName);
+    }
+
+    @Override
+    public String findReaderOrCashierByContract(String contractId, String role) {
+        try {
+            return contractRepo.findReaderOrCashierByContractId(contractId, role).orElse(null);
+        } catch (Exception e) {
+            log.error("Find cashier error due to ", e);
+            return null;
+        }
     }
 }

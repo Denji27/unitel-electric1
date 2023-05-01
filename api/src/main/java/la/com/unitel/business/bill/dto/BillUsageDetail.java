@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 public class BillUsageDetail {
     Bill bill;
     Consumption consumption;
-    AccountDetail accountDetail;
     PIC pic;
 }
 

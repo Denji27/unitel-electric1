@@ -30,4 +30,9 @@ public class BillController implements BillAPIs {
     public ResponseEntity<?> search(BillStatus status, LocalDate fromDate, LocalDate toDate, String input, int offset, int limit) {
         return ResponseEntity.ok(iBill.onSearchBill(status, fromDate, toDate, input, PageRequest.of(offset, limit)));
     }
+
+    @Override
+    public ResponseEntity<?> getUnpaidBillByCashier(String cashier, int offset, int limit) {
+        return ResponseEntity.ok(iBill.onGetUnPaidBillByCashier(cashier, offset, limit));
+    }
 }

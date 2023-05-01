@@ -40,6 +40,9 @@ public class Bill implements Serializable {
     @Enumerated(EnumType.STRING)
     private BillStatus status;
 
+    @Column(nullable = false)
+    private String cashier;
+
     private BigDecimal totalAmount;
     private BigDecimal usageCharge;
     private BigDecimal serviceCharge;

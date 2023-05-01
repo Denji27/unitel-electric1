@@ -23,4 +23,6 @@ public interface BillRepo extends JpaRepository<Bill, String> {
             "where b.contractId = c.id and c.accountId = a.id and c.districtId = d.id and c.provinceId = p.id and b.createdAt between :fromDate and :toDate " +
             "and (:input is null) or (upper(b.id) like concat('%', upper(:input), '%')) and b.status = :status")
     <T> Page<T> searchBill(BillStatus status, LocalDate fromDate, LocalDate toDate, String input, Class<T> type, Pageable pageable);
+
+    Page<Bill> findByCashierAndStatus(String cashier, BillStatus status, Pageable pageable);
 }

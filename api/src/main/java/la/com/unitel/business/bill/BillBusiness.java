@@ -47,17 +47,12 @@ public class BillBusiness extends BaseBusiness implements IBill {
         if (consumption == null)
             throw new ErrorCommon(ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
 
-        Account account = accountService.findById(contract.getAccountId());
-        if (account == null)
-            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
-
         List<String> readerList = contractService.findByIdContractIdAndRole(contract.getId(), Constant.READER);
         List<String> cashierList = contractService.findByIdContractIdAndRole(contract.getId(), Constant.CASHIER);
 
         BillUsageDetail billUsageDetail = BillUsageDetail.builder()
                 .bill(bill)
                 .consumption(consumption)
-                .accountDetail(AccountDetail.generate(accountService.findAccountDetail(account.getId(), AccountDetailView.class)))
                 .pic(new PIC(readerList, cashierList))
                 .build();
 
@@ -73,7 +68,16 @@ public class BillBusiness extends BaseBusiness implements IBill {
     }
 
     @Override
-    public CommonResponse onGetUnPaidBillByCashier(Pageable pageable, Principal principal) {
-        return null;
+    public CommonResponse onGetUnPaidBillByCashier(String cashierUsername, int page, int size) {
+        Account cashier = accountService.findByUsername(cashierUsername);
+        if (cashier == null || !cashier.getIsActive())
+            throw new ErrorCommon(ErrorCode.CASHIER_INVALID, Translator.toLocale(ErrorCode.CASHIER_INVALID));
+
+        /*Page<HistoryReadView> views = consumptionService.findByCreatedAtAndReader(fromDate, toDate, reader.getUsername(), HistoryReadView.class, pageable);
+        List<HistoryRead> collect = views.getContent().parallelStream().map(HistoryRead::generate).collect(Collectors.toList());
+        Page<HistoryRead> result = new PageImpl<>(collect, pageable, views.getTotalElements());*/
+
+        Page<Bill> unpaidList = billService.findUnPaidBillByCashier(cashierUsername, page, size);
+        return generateSuccessResponse(UUID.randomUUID().toString(), unpaidList);
     }
 }

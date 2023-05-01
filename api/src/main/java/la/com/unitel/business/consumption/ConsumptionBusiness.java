@@ -67,6 +67,11 @@ public class ConsumptionBusiness extends BaseBusiness implements IConsumption {
         if (!isValidReaderContract)
             throw new ErrorCommon(ErrorCode.READER_INVALID, Translator.toLocale(ErrorCode.READER_INVALID));
 
+        //find Cashier
+        String cashier = contractService.findReaderOrCashierByContract(contractId, Constant.CASHIER);
+        if (cashier == null)
+            throw new ErrorCommon(ErrorCode.CASHIER_INVALID, Translator.toLocale(ErrorCode.CASHIER_INVALID));
+
 //        find last month consumption
         int lastConsumption = 0;
         boolean isNewContract = Objects.equals(util.getMonthCode(contract.getCreatedAt().toLocalDate()), util.getMonthCode(LocalDate.now()));
@@ -133,6 +138,7 @@ public class ConsumptionBusiness extends BaseBusiness implements IConsumption {
         bill.setServiceCharge(BigDecimal.ZERO);
         bill.setTax(BigDecimal.ZERO);
         bill.setCreatedBy(principal.getName());
+        bill.setCashier(cashier);
         bill = billService.save(bill);
 
         return generateSuccessResponse(readConsumptionRequest.getRequestId(), consumption);
