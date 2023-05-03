@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>keycloak</artifactId>
+    <artifactId>common-business</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -19,13 +19,26 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-admin-client</artifactId>
-            <version>18.0.2</version>
+            <groupId>la.com.unitel</groupId>
+            <artifactId>util</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>la.com.unitel</groupId>
-            <artifactId>util</artifactId>
+            <artifactId>database</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mytel.b2b</groupId>
+            <artifactId>s3-storage-connector</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>la.com.unitel</groupId>
+            <artifactId>keycloak</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
