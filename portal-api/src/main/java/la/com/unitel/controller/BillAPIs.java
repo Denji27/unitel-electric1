@@ -1,5 +1,7 @@
 package la.com.unitel.controller;
 
+import la.com.unitel.business.bill.dto.CheckBillRequest;
+import la.com.unitel.business.bill.dto.PayBillRequest;
 import la.com.unitel.entity.constant.BillStatus;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +22,8 @@ public interface BillAPIs {
     @GetMapping("view/{billId}")
     ResponseEntity<?> viewBillDetail(@PathVariable String billId);
 
-    @PostMapping("view/batch")
-    ResponseEntity<?> viewBillDetailInBatch(@Valid @RequestBody CheckBillRequest checkBillRequest);
+    /*@PostMapping("view/batch")
+    ResponseEntity<?> viewBillDetailInBatch(@Valid @RequestBody CheckBillRequest checkBillRequest);*/
 
     @PostMapping("action/pay")
     ResponseEntity<?> payBill(@Valid @RequestBody PayBillRequest payBillRequest);

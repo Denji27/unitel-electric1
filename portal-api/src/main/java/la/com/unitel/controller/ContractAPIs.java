@@ -1,5 +1,7 @@
 package la.com.unitel.controller;
 
+import la.com.unitel.business.contract.create.dto.CreateContractRequest;
+import la.com.unitel.business.contract.update.dto.UpdateContractRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

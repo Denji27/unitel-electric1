@@ -17,14 +17,14 @@ import java.time.LocalDate;
 @Validated
 public interface ConsumptionAPIs {
 
-    @PostMapping("contract/{contractId}")
+    /*@PostMapping("contract/{contractId}")
     ResponseEntity<?> readConsumption(@PathVariable String contractId,
                                       @Valid @RequestBody ReadConsumptionRequest readConsumptionRequest, Principal principal);
 
     @PostMapping("contract/{consumptionId}")
     ResponseEntity<?> updateConsumption(@PathVariable String consumptionId,
                                         @Valid @RequestBody UpdateConsumptionRequest updateConsumptionRequest,
-                                        Principal principal);
+                                        Principal principal);*/
 
     @GetMapping("contract/{consumptionId}")
     ResponseEntity<?> getDetail(@PathVariable String consumptionId);

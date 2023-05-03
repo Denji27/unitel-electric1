@@ -1,7 +1,5 @@
 package la.com.unitel.controller;
 
-import la.com.unitel.business.account.link.dto.AccountContractLinkRequest;
-import la.com.unitel.business.account.link.dto.AccountWalletRequest;
 import la.com.unitel.business.account.create.dto.CreateAccountRequest;
 import la.com.unitel.business.account.update.dto.UpdateAccountRequest;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +45,7 @@ public interface AccountAPIs {
                                        @RequestParam(defaultValue = "10", required = false) int page,
                                        @RequestParam(defaultValue = "10", required = false) int size);
 
-    @PostMapping("link/contract")
+    /*@PostMapping("link/contract")
     ResponseEntity<?> linkAccountAndContract(@Valid @RequestBody AccountContractLinkRequest linkRequest,
                                              Principal principal);
 
@@ -61,5 +59,5 @@ public interface AccountAPIs {
 
     @PutMapping("link/wallet")
     ResponseEntity<?> updateWalletName(@Valid @RequestBody AccountWalletRequest linkRequest,
-                                       Principal principal);
+                                       Principal principal);*/
 }

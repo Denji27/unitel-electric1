@@ -1,9 +1,9 @@
 package la.com.unitel.controller.imp;
 
-import la.com.unitel.business.account.link.ILinkAccount;
-import la.com.unitel.business.account.link.dto.AccountContractLinkRequest;
-import la.com.unitel.business.account.link.dto.AccountWalletRequest;
+import la.com.unitel.business.account.create.ICreateAccount;
 import la.com.unitel.business.account.create.dto.CreateAccountRequest;
+import la.com.unitel.business.account.inquiry.IInquiryAccount;
+import la.com.unitel.business.account.update.IUpdateAccount;
 import la.com.unitel.business.account.update.dto.UpdateAccountRequest;
 import la.com.unitel.controller.AccountAPIs;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,44 +21,50 @@ import java.security.Principal;
 @RestController
 public class AccountController implements AccountAPIs {
     @Autowired
-    private ILinkAccount iLinkAccount;
+    private ICreateAccount iCreateAccount;
+
+    @Autowired
+    private IUpdateAccount iUpdateAccount;
+
+    @Autowired
+    private IInquiryAccount iInquiryAccount;
 
     @Override
     public ResponseEntity<?> createAccount(CreateAccountRequest createAccountRequest, Principal principal) {
-        return ResponseEntity.ok(iLinkAccount.onCreateAccount(createAccountRequest, principal));
+        return ResponseEntity.ok(iCreateAccount.onCreateAccount(createAccountRequest, principal));
     }
 
     @Override
     public ResponseEntity<?> updateAccount(String accountId, UpdateAccountRequest updateAccountRequest, Principal principal) {
-        return ResponseEntity.ok(iLinkAccount.onUpdateAccount(accountId, updateAccountRequest, principal));
+        return ResponseEntity.ok(iUpdateAccount.onUpdateAccount(accountId, updateAccountRequest, principal));
     }
 
     @Override
     public ResponseEntity<?> uploadAvatar(String accountId, MultipartFile file, Principal principal) {
-        return ResponseEntity.ok(iLinkAccount.onUploadAvatar(accountId, file, principal));
+        return ResponseEntity.ok(iUpdateAccount.onUploadAvatar(accountId, file, principal));
     }
 
     @Override
     public ResponseEntity<?> changeStatus(String accountId) {
-        return ResponseEntity.ok(iLinkAccount.onChangeAccountStatus(accountId));
+        return ResponseEntity.ok(iUpdateAccount.onChangeAccountStatus(accountId));
     }
 
     @Override
     public ResponseEntity<?> viewAccountDetail(String accountId) {
-        return ResponseEntity.ok(iLinkAccount.onViewAccountDetail(accountId));
+        return ResponseEntity.ok(iInquiryAccount.onViewAccountDetail(accountId));
     }
 
     @Override
     public ResponseEntity<?> search(String input, int page, int size) {
-        return ResponseEntity.ok(iLinkAccount.onSearchAccount(input, PageRequest.of(page, size)));
+        return ResponseEntity.ok(iInquiryAccount.onSearchAccount(input, PageRequest.of(page, size)));
     }
 
     @Override
     public ResponseEntity<?> getAccountByRole(String role, int page, int size) {
-        return ResponseEntity.ok(iLinkAccount.onGetReaderList(role, PageRequest.of(page, size)));
+        return ResponseEntity.ok(iInquiryAccount.onGetReaderList(role, PageRequest.of(page, size)));
     }
 
-    @Override
+    /*@Override
     public ResponseEntity<?> linkAccountAndContract(AccountContractLinkRequest linkRequest, Principal principal) {
         return ResponseEntity.ok(iLinkAccount.onLinkAccountAndContract(linkRequest, principal));
     }
@@ -76,5 +82,5 @@ public class AccountController implements AccountAPIs {
     @Override
     public ResponseEntity<?> updateWalletName(AccountWalletRequest linkRequest, Principal principal) {
         return ResponseEntity.ok(iLinkAccount.onUpdateAccountWalletName(linkRequest, principal));
-    }
+    }*/
 }
