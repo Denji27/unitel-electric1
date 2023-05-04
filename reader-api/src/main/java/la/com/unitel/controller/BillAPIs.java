@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.time.LocalDate;
 
 /**
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 @Validated
 public interface BillAPIs {
 
-    @GetMapping("view/{billId}")
+    @GetMapping("{billId}")
     ResponseEntity<?> viewBillDetail(@PathVariable String billId);
 
     @GetMapping
@@ -29,10 +30,11 @@ public interface BillAPIs {
                              @RequestParam(defaultValue = "0", required = false) int page,
                              @RequestParam(defaultValue = "10", required = false) int size);
 
-    @GetMapping("cashier/{cashier}/unpaid")
-    ResponseEntity<?> getUnpaidBillByCashier(@PathVariable String cashier,
-                                             @RequestParam(defaultValue = "0", required = false) int page,
-                                             @RequestParam(defaultValue = "10", required = false) int size);
+    //TODO limit role
+    @GetMapping("cashier/unpaid")
+    ResponseEntity<?> getUnpaidBillByCashier(@RequestParam(defaultValue = "0", required = false) int page,
+                                             @RequestParam(defaultValue = "10", required = false) int size,
+                                             Principal principal);
 
     @GetMapping("contract/{contractId}/unpaid")
     ResponseEntity<?> getUnpaidBillByContract(@PathVariable String contractId,

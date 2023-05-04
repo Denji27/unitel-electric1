@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -134,6 +135,7 @@ public class ReadConsumptionBusiness extends BaseBusiness implements IReadConsum
         bill.setTax(BigDecimal.ZERO);
         bill.setCreatedBy(principal.getName());
         bill.setCashier(cashier);
+        bill.setPaymentDeadline(YearMonth.now().atEndOfMonth().atStartOfDay());
         bill = baseService.getBillService().save(bill);
 
         return generateSuccessResponse(readConsumptionRequest.getRequestId(), consumption);

@@ -15,29 +15,38 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class BillResponse {
-    private String id;
+    private String billId;
     private String phoneNumber;
-    private String avatarId;
-    private BillStatus status;
-    private BigDecimal totalAmount;
+    private String status;
+    private String contractId;
+    private String meterDevice;
+    private String period;
+    private String contractName;
+    private String address;
+    private String readBy;
+    private String cashier;
     private String district;
     private String province;
-    private String createdBy;
-    private String updatedBy;
-    private LocalDateTime createdAt;
+    private Integer usageConsumption;
+    private LocalDateTime readAt;
+    private LocalDateTime billingDate;
+    private LocalDateTime dueDate;
+    private BigDecimal totalAmount;
+    private BigDecimal usageCharge;
+    private BigDecimal serviceCharge;
+    private BigDecimal tax;
+    private BigDecimal lateFee;
+
+
 
     public static BillResponse generate(BillDetailView view){
         return BillResponse.builder()
-                .id(view.getId())
+                .billId(view.getId())
                 .phoneNumber(view.getPhoneNumber())
-                .avatarId(view.getAvatarId())
-                .status(view.getStatus())
+                .status(view.getStatus().name())
                 .totalAmount(view.getTotalAmount())
                 .district(view.getDistrict())
                 .province(view.getProvince())
-                .createdBy(view.getCreatedBy())
-                .updatedBy(view.getUpdatedBy())
-                .createdAt(view.getCreatedAt())
                 .build();
     }
 }

@@ -29,6 +29,8 @@ public class ContractBusinessCommon extends BaseBusiness implements IContractCom
         Contract contract = baseService.getContractService().findById(contractId);
         if (contract == null)
             throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+
+        //TODO missing fields, refer reader app
         return generateSuccessResponse(UUID.randomUUID().toString(),
                 ContractDetail.generate(baseService.getContractService().findContractDetail(contract.getId(), ContractDetailView.class)));
     }

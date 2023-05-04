@@ -51,16 +51,36 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
         if (consumption == null)
             throw new ErrorCommon(ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
 
-        List<String> readerList = baseService.getContractService().findByIdContractIdAndRole(contract.getId(), Constants.READER);
-        List<String> cashierList = baseService.getContractService().findByIdContractIdAndRole(contract.getId(), Constants.CASHIER);
-
         BillUsageDetail billUsageDetail = BillUsageDetail.builder()
                 .bill(bill)
                 .consumption(consumption)
-                .pic(new PIC(readerList, cashierList))
+//                .pic(new PIC(readerList, cashierList))
                 .build();
 
-        return generateSuccessResponse(UUID.randomUUID().toString(), billUsageDetail);
+        BillResponse billResponse = BillResponse.builder()
+                .billId(billId)
+                .phoneNumber(contract.getPhoneNumber())
+                .status(bill.getStatus().name())
+                .contractId(contract.getId())
+                .meterDevice(consumption.getMeterCode())
+                .period(consumption.getPeriod())
+                .contractName(contract.getName())
+                .address(contract.getAddress())
+                .readBy(consumption.getReadBy())
+                .cashier(bill.getCashier())
+                .usageConsumption(consumption.getUsageConsumption())
+                .readAt(consumption.getReadAt())
+                .billingDate(bill.getCreatedAt())
+                .totalAmount(bill.getTotalAmount())
+                .usageCharge(bill.getUsageCharge())
+                .serviceCharge(bill.getServiceCharge())
+                .tax(bill.getTax())
+                .dueDate(bill.getPaymentDeadline())
+                .build();
+
+        //TODO add billing range time & due date
+
+        return generateSuccessResponse(UUID.randomUUID().toString(), billResponse);
     }
 
     @Override
@@ -73,6 +93,7 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
 
     @Override
     public CommonResponse onGetUnPaidBillByCashier(String cashierUsername, int page, int size) {
+        //TODO add payment deadline when create bill
         Account cashier = baseService.getAccountService().findByUsername(cashierUsername);
         if (cashier == null || !cashier.getIsActive())
             throw new ErrorCommon(ErrorCode.CASHIER_INVALID, Translator.toLocale(ErrorCode.CASHIER_INVALID));
@@ -82,7 +103,37 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
         Page<HistoryRead> result = new PageImpl<>(collect, pageable, views.getTotalElements());*/
 
         Page<Bill> unpaidList = baseService.getBillService().findUnPaidBillByCashier(cashierUsername, page, size);
-        return generateSuccessResponse(UUID.randomUUID().toString(), unpaidList);
+        List<UnpaidBillDto> collect = unpaidList.getContent().parallelStream().map(this::convert).collect(Collectors.toList());
+        Page<UnpaidBillDto> result = new PageImpl<>(collect, unpaidList.getPageable(), unpaidList.getTotalElements());
+        return generateSuccessResponse(UUID.randomUUID().toString(), result);
+    }
+
+    private UnpaidBillDto convert(Bill b) {
+        Consumption consumption = baseService.getConsumptionService().findById(b.getUsageId());
+        if (consumption == null || !consumption.getStatus().equals(ConsumptionStatus.READ))
+            throw new ErrorCommon(ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
+
+        Contract contract = baseService.getContractService().findById(consumption.getContractId());
+        if (contract == null || !contract.getIsActive())
+            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+
+        return UnpaidBillDto.builder()
+                .billId(b.getId())
+                .contractId(contract.getId())
+                .phoneNumber(contract.getPhoneNumber())
+                .meterDevice(consumption.getMeterCode())
+                .period(consumption.getPeriod())
+                .contractName(contract.getName())
+                .address(contract.getAddress())
+                .readAt(consumption.getReadAt())
+                .readBy(consumption.getReadBy())
+                .cashier(b.getCashier())
+                .usageConsumption(consumption.getUsageConsumption())
+                .totalAmount(b.getTotalAmount())
+                .build();
+
+        //TODO update consumption when change reader, status
+        //TODO update bill when change cashier, contract status
     }
 
     @Override

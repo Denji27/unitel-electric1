@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.time.LocalDate;
 
 /**
@@ -35,8 +36,8 @@ public class BillController implements BillAPIs {
     }
 
     @Override
-    public ResponseEntity<?> getUnpaidBillByCashier(String cashier, int page, int size) {
-        return ResponseEntity.ok(iUnpaidBill.onGetUnPaidBillByCashier(cashier, page, size));
+    public ResponseEntity<?> getUnpaidBillByCashier(int page, int size, Principal principal) {
+        return ResponseEntity.ok(iUnpaidBill.onGetUnPaidBillByCashier(principal.getName(), page, size));
     }
 
     @Override

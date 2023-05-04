@@ -49,26 +49,6 @@ public class ConsumptionBusinessCommon extends BaseBusiness implements IConsumpt
         return generateSuccessResponse(UUID.randomUUID().toString(), result);
     }
 
-    /*private UnreadDto convert(Consumption c) {
-        Contract contract = baseService.getContractService().findById(c.getContractId());
-        if (contract == null || !contract.getIsActive())
-            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
-
-        MeterDevice device = baseService.getDeviceService().findByContractIdAndIsActiveTrue(c.getContractId());
-        if (device == null)
-            throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
-
-        return UnreadDto.builder()
-                .consumptionId(c.getId())
-                .contractName(contract.getName())
-                .contractId(contract.getId())
-                .meterDevice(device.getId())
-                .period(c.getPeriod())
-                .address(contract.getAddress())
-                .readBy(c.getReadBy())
-                .build();
-    }*/
-
     @Override
     public CommonResponse onGetReadHistoryByReader(String readerUsername, LocalDate fromDate, LocalDate toDate, int page, int size) {
         Account reader = baseService.getAccountService().findByUsername(readerUsername);
