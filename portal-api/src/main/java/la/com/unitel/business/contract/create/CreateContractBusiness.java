@@ -30,8 +30,8 @@ public class CreateContractBusiness extends BaseBusiness implements ICreateContr
     @Override
     @Transactional
     public CommonResponse onCreateContract(CreateContractRequest createContractRequest, Principal principal) {
-        if (baseService.getAccountService().existsByUsername(createContractRequest.getUsername()))
-            throw new ErrorCommon(ErrorCode.USERNAME_EXISTED, Translator.toLocale(ErrorCode.USERNAME_EXISTED));
+        /*if (baseService.getAccountService().existsByUsername(createContractRequest.getUsername()))
+            throw new ErrorCommon(ErrorCode.USERNAME_EXISTED, Translator.toLocale(ErrorCode.USERNAME_EXISTED));*/
 
         District district = baseService.getDistrictService().findById(createContractRequest.getDistrictId());
         if (district == null)
@@ -42,11 +42,11 @@ public class CreateContractBusiness extends BaseBusiness implements ICreateContr
             throw new ErrorCommon(ErrorCode.CONTRACT_TYPE_INVALID, Translator.toLocale(ErrorCode.CONTRACT_TYPE_INVALID));
 
         MeterDevice device = baseService.getDeviceService().findById(createContractRequest.getDeviceId());
-        if (device == null)
+        if (device == null || device.getContractId() != null)
             throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
 
-        if (baseService.getContractService().existsByMeterCode(createContractRequest.getDeviceId()))
-            throw new ErrorCommon(ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));
+        /*if (baseService.getContractService().existsByMeterCode(createContractRequest.getDeviceId()))
+            throw new ErrorCommon(ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));*/
 
         if (baseService.getContractService().existsByContractName(createContractRequest.getName()))
             throw new ErrorCommon(ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));
@@ -86,7 +86,7 @@ public class CreateContractBusiness extends BaseBusiness implements ICreateContr
         contract.setAvatarId(contract.getGender().equals(Gender.MALE) ? Constants.AVATAR_MALE_DEFAULT : Constants.AVATAR_FEMALE_DEFAULT);
         contract.setLatitude(createContractRequest.getLatitude());
         contract.setLongitude(createContractRequest.getLongitude());
-        contract.setMeterCode(createContractRequest.getDeviceId());
+//        contract.setMeterCode(createContractRequest.getDeviceId());
         contract.setIsActive(true);
         contract.setAddress(createContractRequest.getAddress());
         contract.setRemark(createContractRequest.getRemark());
@@ -104,6 +104,9 @@ public class CreateContractBusiness extends BaseBusiness implements ICreateContr
         cashierContractMap.setRole(Constants.CASHIER);
         cashierContractMap.setCreatedBy(principal.getName());
         baseService.getContractService().save(cashierContractMap);
+
+        device.setContractId(contract.getId());
+        baseService.getDeviceService().save(device);
 
         return generateSuccessResponse(createContractRequest.getRequestId(),
                 ContractDetail.generate(baseService.getContractService().findContractDetail(contract.getId(), ContractDetailView.class)));

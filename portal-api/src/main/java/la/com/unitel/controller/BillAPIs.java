@@ -33,16 +33,16 @@ public interface BillAPIs {
                              @DateTimeFormat(pattern = "dd/MM/yyyy") @Validated LocalDate fromDate,
                              @DateTimeFormat(pattern = "dd/MM/yyyy") @Validated LocalDate toDate,
                              @RequestParam(required = false) String input,
-                             @RequestParam(defaultValue = "10", required = false) int page,
+                             @RequestParam(defaultValue = "0", required = false) int page,
                              @RequestParam(defaultValue = "10", required = false) int size);
 
     @GetMapping("cashier/{cashier}/unpaid")
     ResponseEntity<?> getUnpaidBillByCashier(@PathVariable String cashier,
-                                             @RequestParam(defaultValue = "10", required = false) int page,
+                                             @RequestParam(defaultValue = "0", required = false) int page,
                                              @RequestParam(defaultValue = "10", required = false) int size);
 
     @GetMapping("contract/{contractId}/unpaid")
     ResponseEntity<?> getUnpaidBillByContract(@PathVariable String contractId,
-                                             @RequestParam(defaultValue = "10", required = false) int page,
+                                             @RequestParam(defaultValue = "0", required = false) int page,
                                              @RequestParam(defaultValue = "10", required = false) int size);
 }

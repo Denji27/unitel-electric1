@@ -12,6 +12,7 @@
         <module>enduser-api</module>
         <module>portal-api</module>
         <module>client-api</module>
+        <module>schedule-process</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

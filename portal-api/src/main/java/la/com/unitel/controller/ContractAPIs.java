@@ -34,6 +34,6 @@ public interface ContractAPIs {
 
     @GetMapping
     ResponseEntity<?> search(@RequestParam(required = false) String input,
-                             @RequestParam(defaultValue = "10", required = false) int page,
+                             @RequestParam(defaultValue = "0", required = false) int page,
                              @RequestParam(defaultValue = "10", required = false) int size);
 }

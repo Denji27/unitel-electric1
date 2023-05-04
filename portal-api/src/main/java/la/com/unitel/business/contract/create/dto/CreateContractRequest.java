@@ -14,10 +14,10 @@ import javax.validation.constraints.NotBlank;
 public class CreateContractRequest extends BaseRequest {
     @NotBlank
     private String name;
-    @NotBlank
+    /*@NotBlank
     private String username;
     @NotBlank
-    private String password;
+    private String password;*/
     @NotBlank
     private String phoneNumber;
     @NotBlank

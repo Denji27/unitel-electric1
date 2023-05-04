@@ -29,10 +29,10 @@ public class Consumption implements Serializable {
     @Column(nullable = false)
     private String contractId;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String meterCode;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private Integer readUnit;
 
     @Column(nullable = false)
@@ -43,7 +43,7 @@ public class Consumption implements Serializable {
     private String updatedBy;
     private String remark;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String imageId;
 
     @Enumerated(EnumType.STRING)

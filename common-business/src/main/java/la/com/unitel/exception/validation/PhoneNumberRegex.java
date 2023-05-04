@@ -1,7 +1,7 @@
 package la.com.unitel.exception.validation;
 
+import la.com.unitel.Constants;
 import la.com.unitel.UtilImp;
-import la.com.unitel.constant.Constants;
 
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;

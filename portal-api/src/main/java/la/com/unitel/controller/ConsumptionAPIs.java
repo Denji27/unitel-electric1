@@ -31,21 +31,21 @@ public interface ConsumptionAPIs {
 
     @GetMapping("reader/{reader}/unread")
     ResponseEntity<?> getUnreadByReader(@PathVariable String reader,
-                                        @RequestParam(defaultValue = "10", required = false) int page,
+                                        @RequestParam(defaultValue = "0", required = false) int page,
                                         @RequestParam(defaultValue = "10", required = false) int size);
 
     @GetMapping("reader/{reader}/history")
     ResponseEntity<?> getHistoryByReader(@PathVariable String reader,
                                          @RequestParam(value = "fromDate") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fromDate,
                                          @RequestParam(value = "toDate") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate toDate,
-                                         @RequestParam(defaultValue = "10", required = false) int page,
+                                         @RequestParam(defaultValue = "0", required = false) int page,
                                          @RequestParam(defaultValue = "10", required = false) int size);
 
     @GetMapping("contract/{contractId}/history")
     ResponseEntity<?> getConsumptionByContractId(@PathVariable String contractId,
                                                  @RequestParam(value = "fromDate") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fromDate,
                                                  @RequestParam(value = "toDate") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate toDate,
-                                                 @RequestParam(defaultValue = "10", required = false) int page,
+                                                 @RequestParam(defaultValue = "0", required = false) int page,
                                                  @RequestParam(defaultValue = "10", required = false) int size);
 }
 

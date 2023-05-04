@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDate;
 
 /**
@@ -22,7 +23,8 @@ public class InquiryBillBusiness extends BaseBusiness implements IInquiryBill {
     private IBillCommon iBillCommon;
 
     @Override
-    public CommonResponse onViewBillDetail(String billId) {
+    public CommonResponse onViewBillDetail(String billId, Principal principal) {
+        log.info("View bill Id: {}, Principal: {}", billId, principal.getName());
         return iBillCommon.onViewBillDetail(billId);
     }
 }

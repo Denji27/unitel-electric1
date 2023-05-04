@@ -54,7 +54,7 @@ class MonthCodeValidator implements ConstraintValidator<MonthCodeRegex, String> 
             try {
                 Date date = simpleDateFormat.parse(monthCode.trim());
                 logger.info("Parse date: {}", date);
-                return simpleDateFormat.format(date).equals(monthCode.trim()) && (LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM")).equals(monthCode.trim()));
+                return simpleDateFormat.format(date).equals(monthCode.trim()) /*&& (LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM")).equals(monthCode.trim()))*/;
             } catch (ParseException e) {
                 logger.error("Parse date error due to: ", e);
             }

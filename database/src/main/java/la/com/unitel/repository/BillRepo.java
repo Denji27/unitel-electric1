@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  **/
 public interface BillRepo extends JpaRepository<Bill, String> {
 
-    @Query(value = "select b.id as id, a.username as username, c.phoneNumber as phoneNumber, c.avatarId as avatarId, " +
+    @Query(value = "select b.id as id, c.phoneNumber as phoneNumber, c.avatarId as avatarId, " +
             "b.status as status, b.totalAmount as totalAmount, d.name, p.name, b.createdBy as createdBy, b.updatedBy as updatedBy, b.createdAt as createdAt  " +
             "from Bill b, Contract c, District d, Province p " +
             "where b.contractId = c.id and c.districtId = d.id and c.provinceId = p.id and b.createdAt between :fromDate and :toDate " +

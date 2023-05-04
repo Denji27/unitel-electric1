@@ -13,7 +13,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class AccountContractLinkRequest extends BaseRequest {
     @NotBlank
     private String accountId;

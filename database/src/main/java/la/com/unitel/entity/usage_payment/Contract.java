@@ -44,8 +44,8 @@ public class Contract implements Serializable {
     @Column(nullable = false)
     private String contractType;
 
-    @Column(unique = true, nullable = false)
-    private String meterCode;
+    /*@Column(unique = true, nullable = false)
+    private String meterCode;*/
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

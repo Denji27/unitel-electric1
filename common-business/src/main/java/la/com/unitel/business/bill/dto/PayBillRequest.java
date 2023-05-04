@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
@@ -14,7 +15,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class PayBillRequest extends BaseRequest {
     @NotBlank
     private String referenceId;
@@ -22,7 +22,8 @@ public class PayBillRequest extends BaseRequest {
     @NotBlank
     private String contractId;
 
-    @NotBlank
+    @DecimalMin(value = "0.0", inclusive = false)
+//    @Digits(integer=3, fraction=2)
     private BigDecimal totalAmount;
 
     @NotEmpty

@@ -17,8 +17,8 @@ public class ReadConsumptionRequest extends BaseRequest {
     private String meterCode;
     @Positive
     private Integer readUnit;
-    @MonthCodeRegex
-    private String period;
+    /*@MonthCodeRegex
+    private String period;*/
     @NotBlank
     private String latitude;
     @NotBlank

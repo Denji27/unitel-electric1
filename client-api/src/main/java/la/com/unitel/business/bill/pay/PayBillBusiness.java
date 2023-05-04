@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
+
 /**
  * @author : Tungct
  * @since : 4/16/2023, Sun
@@ -26,7 +28,8 @@ public class PayBillBusiness extends BaseBusiness implements IPayBill {
      * service call
      */
     @Override
-    public CommonResponse onViewBillInBatch(CheckBillRequest checkBillRequest) {
+    public CommonResponse onViewBillInBatch(CheckBillRequest checkBillRequest, Principal principal) {
+        log.info("Request Id: {}, Principal: {}", checkBillRequest.getRequestId(), principal.getName());
         return iBillCommon.onViewBillInBatch(checkBillRequest);
     }
 
@@ -38,7 +41,8 @@ public class PayBillBusiness extends BaseBusiness implements IPayBill {
      */
     @Override
     @Transactional
-    public CommonResponse onPayBill(PayBillRequest payBillRequest) {
+    public CommonResponse onPayBill(PayBillRequest payBillRequest, Principal principal) {
+        log.info("Request Id: {}, Principal: {}", payBillRequest.getRequestId(), principal.getName());
         return iBillCommon.onPayBill(payBillRequest);
     }
 }

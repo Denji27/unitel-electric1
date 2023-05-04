@@ -159,6 +159,7 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
             bill.setPaidAt(LocalDateTime.now());
             bill.setStatus(BillStatus.PAID);
             bill.setRemark(payBillRequest.getReason());
+            bill.setTransactionId(payBillRequest.getReferenceId());
             billUpdateList.add(bill);
 
             totalAmount = totalAmount.add(bill.getTotalAmount());

@@ -11,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class AccountWalletRequest extends BaseRequest {
     @NotBlank
     private String accountId;

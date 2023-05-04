@@ -13,7 +13,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class CheckBillRequest extends BaseRequest {
     @NotBlank
     private String contractId;

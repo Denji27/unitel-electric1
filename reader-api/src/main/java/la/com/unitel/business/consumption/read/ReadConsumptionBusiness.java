@@ -37,6 +37,7 @@ public class ReadConsumptionBusiness extends BaseBusiness implements IReadConsum
     @Override
     @Transactional
     public CommonResponse onReadConsumption(String contractId, ReadConsumptionRequest readConsumptionRequest, Principal principal) {
+        //TODO check case request period not null
         MeterDevice device = baseService.getDeviceService().findById(readConsumptionRequest.getMeterCode());
         if (device == null || !device.getIsActive() || device.getContractId() == null || !Objects.equals(device.getContractId(), contractId))
             throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
