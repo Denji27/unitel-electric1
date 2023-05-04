@@ -44,24 +44,24 @@ public class ConsumptionServiceImp implements ConsumptionService {
     @Override
     public Page<Consumption> findUnReadByReaderTillNow(String reader, int page, int size) {
         return consumptionRepo.findByReadByAndStatusAndPeriodLessThanEqual(
-                reader, ConsumptionStatus.UNREAD, util.getMonthCode(LocalDate.now()), PageRequest.of(page, size, Sort.by("createdAt").ascending()));
+                reader, ConsumptionStatus.UNREAD, util.getMonthCode(LocalDate.now()), PageRequest.of(page, size, Sort.by("period").ascending()));
     }
 
     @Override
     public Page<Consumption> findReadByReader(String reader, LocalDate fromDate, LocalDate toDate, int page, int size) {
-        if (toDate == null) toDate = LocalDate.now().plusDays(1);
+        if (toDate == null) toDate = LocalDate.now();
         if (fromDate == null) fromDate = toDate.minusDays(2);
 
         return consumptionRepo.findByReadByAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqualAndStatus(
-                reader, fromDate, toDate, ConsumptionStatus.READ, PageRequest.of(page, size, Sort.by("createdAt").descending()));
+                reader, fromDate.atStartOfDay(), toDate.atStartOfDay().plusDays(1), ConsumptionStatus.READ, PageRequest.of(page, size, Sort.by("createdAt").descending()));
     }
 
     @Override
     public Page<Consumption> findConsumptionByContractId(String contractId, LocalDate fromDate, LocalDate toDate, int page, int size) {
-        if (toDate == null) toDate = LocalDate.now().plusDays(1);
+        if (toDate == null) toDate = LocalDate.now();
         if (fromDate == null) fromDate = toDate.minusDays(2);
         return consumptionRepo.findByContractIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqualAndStatus(
-                contractId, fromDate, toDate, ConsumptionStatus.READ, PageRequest.of(page, size, Sort.by("createdAt").descending()));
+                contractId, fromDate.atStartOfDay(), toDate.atStartOfDay().plusDays(1), ConsumptionStatus.READ, PageRequest.of(page, size, Sort.by("createdAt").descending()));
     }
 
     @Override

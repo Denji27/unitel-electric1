@@ -13,4 +13,5 @@ public interface MeterDeviceService {
     MeterDevice save(MeterDevice device);
     MeterDevice findById(String id);
     Page<MeterDevice> findByNameLikeIgnoreCase(String input, Pageable pageable);
+    MeterDevice findByContractIdAndIsActiveTrue(String contractId);
 }

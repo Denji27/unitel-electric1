@@ -3,7 +3,10 @@ package la.com.unitel.business.consumption;
 import la.com.unitel.BaseBusiness;
 import la.com.unitel.CommonResponse;
 import la.com.unitel.Translator;
+import la.com.unitel.business.consumption.dto.ConsumptionDetailDto;
+import la.com.unitel.business.consumption.dto.ReadConsumptionDto;
 import la.com.unitel.entity.account.Account;
+import la.com.unitel.entity.account.MeterDevice;
 import la.com.unitel.entity.constant.ConsumptionStatus;
 import la.com.unitel.entity.usage_payment.Consumption;
 import la.com.unitel.entity.usage_payment.Contract;
@@ -11,11 +14,13 @@ import la.com.unitel.exception.ErrorCode;
 import la.com.unitel.exception.ErrorCommon;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormatSymbols;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author : Tungct
@@ -33,16 +38,36 @@ public class ConsumptionBusinessCommon extends BaseBusiness implements IConsumpt
 
 //        find unread list
         Page<Consumption> unreadList = baseService.getConsumptionService().findUnReadByReaderTillNow(readerUsername, page, size);
-        /*List<String> contractIdList = contractService.findByIdReaderIdAndRole(reader.getId(), Constant.READER);
-        List<String> readList = consumptionService.findContractIdListByPeriodAndReadBy(util.getMonthCode(LocalDate.now()), reader.getUsername());
-        List<String> unreadList = contractIdList.parallelStream().filter(contractId -> !readList.contains(contractId)).collect(Collectors.toList());*/
+        List<ReadConsumptionDto> collect = unreadList.getContent().parallelStream().map(this::convert).collect(Collectors.toList());
+        Page<ReadConsumptionDto> result = new PageImpl<>(collect, unreadList.getPageable(), unreadList.getTotalElements());
+
 
 //        find contract detail of unread list
         /*Page<ContractDetailView> views = contractService.findByIdInList(unreadList, ContractDetailView.class, pageable);
         List<ContractDetail> collect = views.getContent().parallelStream().map(ContractDetail::generate).collect(Collectors.toList());
         Page<ContractDetail> result = new PageImpl<>(collect, pageable, views.getTotalElements());*/
-        return generateSuccessResponse(UUID.randomUUID().toString(), unreadList);
+        return generateSuccessResponse(UUID.randomUUID().toString(), result);
     }
+
+    /*private UnreadDto convert(Consumption c) {
+        Contract contract = baseService.getContractService().findById(c.getContractId());
+        if (contract == null || !contract.getIsActive())
+            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+
+        MeterDevice device = baseService.getDeviceService().findByContractIdAndIsActiveTrue(c.getContractId());
+        if (device == null)
+            throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
+
+        return UnreadDto.builder()
+                .consumptionId(c.getId())
+                .contractName(contract.getName())
+                .contractId(contract.getId())
+                .meterDevice(device.getId())
+                .period(c.getPeriod())
+                .address(contract.getAddress())
+                .readBy(c.getReadBy())
+                .build();
+    }*/
 
     @Override
     public CommonResponse onGetReadHistoryByReader(String readerUsername, LocalDate fromDate, LocalDate toDate, int page, int size) {
@@ -55,7 +80,31 @@ public class ConsumptionBusinessCommon extends BaseBusiness implements IConsumpt
         Page<HistoryRead> result = new PageImpl<>(collect, pageable, views.getTotalElements());*/
 
         Page<Consumption> readList = baseService.getConsumptionService().findReadByReader(readerUsername, fromDate, toDate, page, size);
-        return generateSuccessResponse(UUID.randomUUID().toString(), readList);
+        List<ReadConsumptionDto> collect = readList.getContent().parallelStream().map(this::convert).collect(Collectors.toList());
+        Page<ReadConsumptionDto> result = new PageImpl<>(collect, readList.getPageable(), readList.getTotalElements());
+        return generateSuccessResponse(UUID.randomUUID().toString(), result);
+    }
+
+    private ReadConsumptionDto convert(Consumption c) {
+        Contract contract = baseService.getContractService().findById(c.getContractId());
+        if (contract == null || !contract.getIsActive())
+            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+
+        MeterDevice device = baseService.getDeviceService().findByContractIdAndIsActiveTrue(c.getContractId());
+        if (device == null)
+            throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
+
+        return ReadConsumptionDto.builder()
+                .consumptionId(c.getId())
+                .contractName(contract.getName())
+                .contractId(contract.getId())
+                .meterDevice(device.getId())
+                .period(c.getPeriod())
+                .address(contract.getAddress())
+                .readBy(c.getReadBy())
+                .usageConsumption(c.getUsageConsumption())
+                .readAt(c.getReadAt())
+                .build();
     }
 
     @Override
@@ -64,7 +113,31 @@ public class ConsumptionBusinessCommon extends BaseBusiness implements IConsumpt
         if (consumption == null || !consumption.getStatus().equals(ConsumptionStatus.READ))
             throw new ErrorCommon(ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
 
-        return generateSuccessResponse(UUID.randomUUID().toString(), consumption);
+        return generateSuccessResponse(UUID.randomUUID().toString(), detailConvert(consumption));
+    }
+
+    private ConsumptionDetailDto detailConvert(Consumption c) {
+        Contract contract = baseService.getContractService().findById(c.getContractId());
+        if (contract == null || !contract.getIsActive())
+            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+
+        return ConsumptionDetailDto.builder()
+                .consumptionId(c.getId())
+                .contractName(contract.getName())
+                .contractId(contract.getId())
+                .meterDevice(c.getMeterCode())
+                .period(c.getPeriod())
+                .address(contract.getAddress())
+                .readBy(c.getReadBy())
+                .usageConsumption(c.getUsageConsumption())
+                .readAt(c.getReadAt())
+                .imageId(c.getImageId())
+                .latitude(c.getLatitude())
+                .longitude(c.getLongitude())
+                .status(c.getStatus().name())
+                .isRollOver(c.getIsRollOver())
+                .photoAt(c.getReadAt())
+                .build();
     }
 
     @Override

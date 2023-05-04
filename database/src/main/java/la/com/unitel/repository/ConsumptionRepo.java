@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -27,10 +28,10 @@ public interface ConsumptionRepo extends JpaRepository<Consumption, String> {
 
     Page<Consumption> findByReadByAndStatusAndPeriodLessThanEqual(String reader, ConsumptionStatus status, String period, Pageable pageable);
     Page<Consumption> findByReadByAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqualAndStatus(
-            String reader, LocalDate fromDate, LocalDate toDate, ConsumptionStatus status, Pageable pageable);
+            String reader, LocalDateTime fromDate, LocalDateTime toDate, ConsumptionStatus status, Pageable pageable);
 
     Page<Consumption> findByContractIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqualAndStatus(
-            String contractId, LocalDate fromDate, LocalDate toDate, ConsumptionStatus status, Pageable pageable);
+            String contractId, LocalDateTime fromDate, LocalDateTime toDate, ConsumptionStatus status, Pageable pageable);
 
     @Query("select c.contractId from Consumption c where c.period = :period and c.readBy = :reader")
     List<String> findContractIdListByPeriodAndReadBy(String period, String reader);

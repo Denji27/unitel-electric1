@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * @author : Tungct
  * @since : 4/12/2023, Wed
@@ -36,5 +38,10 @@ public class MeterDeviceServiceImp implements MeterDeviceService {
     public Page<MeterDevice> findByNameLikeIgnoreCase(String input, Pageable pageable) {
 //        return meterDeviceRepo.findByNameLikeIgnoreCase('%' + input + '%', pageable);
         return meterDeviceRepo.findByNameLikeIgnoreCase(input, pageable);
+    }
+
+    @Override
+    public MeterDevice findByContractIdAndIsActiveTrue(String contractId) {
+        return meterDeviceRepo.findByContractIdAndIsActiveTrue(contractId).orElse(null);
     }
 }

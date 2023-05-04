@@ -1,6 +1,5 @@
 package la.com.unitel.business.consumption.dto;
 
-import la.com.unitel.business.consumption.dto.projection.HistoryReadView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,17 +11,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class HistoryRead {
-    private String id;
-    private String name;
-    private String username;
-    private String phoneNumber;
-    private String meterCode;
+public class ReadConsumptionDto {
+    private String consumptionId;
+    private String contractId;
+    private String meterDevice;
+    private String period;
+    private String contractName;
     private String address;
-    private String createdBy;
-    private LocalDateTime createdAt;
+    private String readBy;
+    private Integer usageConsumption;
+    private LocalDateTime readAt;
 
-    public static HistoryRead generate(HistoryReadView view){
+    /*public static HistoryRead generate(HistoryReadView view){
         return HistoryRead.builder()
                 .id(view.getId())
                 .name(view.getName())
@@ -33,16 +33,7 @@ public class HistoryRead {
                 .createdBy(view.getCreatedBy())
                 .createdAt(view.getCreatedAt())
                 .build();
-    }
+    }*/
 
-    /*private String avatarId;
-    private String gender;
-    private String district;
-    private String province;
-    private String contractType;
-    private String latitude;
-    private String longitude;
-    private Boolean isAcive;
-    private String remark;*/
 
 }

@@ -1,5 +1,6 @@
 package la.com.unitel.business.consumption.read;
 
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import la.com.unitel.BaseBusiness;
 import la.com.unitel.CommonResponse;
 import la.com.unitel.Constants;
@@ -19,12 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author : Tungct
@@ -133,5 +137,20 @@ public class ReadConsumptionBusiness extends BaseBusiness implements IReadConsum
         bill = baseService.getBillService().save(bill);
 
         return generateSuccessResponse(readConsumptionRequest.getRequestId(), consumption);
+    }
+
+    @Override
+    public CommonResponse uploadConsumptionImage(MultipartFile file, Principal principal) {
+        String fileId = null;
+
+        try {
+            fileId = baseService.getStorageService().uploadFile(Constants.ELECTRIC, file, CannedAccessControlList.PublicRead);
+        } catch (IOException e) {
+            log.error("Upload file error due to ", e);
+        }
+
+        if (fileId == null)
+            throw new ErrorCommon(ErrorCode.FILE_UPLOAD_ERROR, Translator.toLocale(ErrorCode.FILE_UPLOAD_ERROR));
+        return generateSuccessResponse(UUID.randomUUID().toString(), "https://s3.mytel.com.mm/electric/" + fileId);
     }
 }
