@@ -45,19 +45,4 @@ public interface AccountAPIs {
                                        @RequestParam(defaultValue = "0", required = false) int page,
                                        @RequestParam(defaultValue = "10", required = false) int size);
 
-    /*@PostMapping("link/contract")
-    ResponseEntity<?> linkAccountAndContract(@Valid @RequestBody AccountContractLinkRequest linkRequest,
-                                             Principal principal);
-
-    @PostMapping("link/wallet")
-    ResponseEntity<?> linkAccountAndWallet(@Valid @RequestBody AccountWalletRequest linkRequest,
-                                           Principal principal);
-
-    @PostMapping("unlink/wallet")
-    ResponseEntity<?> unlinkAccountAndWallet(@Valid @RequestBody AccountWalletRequest linkRequest,
-                                             Principal principal);
-
-    @PutMapping("link/wallet")
-    ResponseEntity<?> updateWalletName(@Valid @RequestBody AccountWalletRequest linkRequest,
-                                       Principal principal);*/
 }

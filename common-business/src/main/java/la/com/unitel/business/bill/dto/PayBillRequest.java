@@ -1,6 +1,7 @@
 package la.com.unitel.business.bill.dto;
 
 import la.com.unitel.BaseRequest;
+import la.com.unitel.entity.constant.PaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,6 +30,8 @@ public class PayBillRequest extends BaseRequest {
     @NotEmpty
     private List<String> billIds;
 
+    private PaymentMethod paymentMethod;
     private String paidBy;
     private String reason;
+
 }

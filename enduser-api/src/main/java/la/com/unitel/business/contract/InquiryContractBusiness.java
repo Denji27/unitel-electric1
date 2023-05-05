@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 @Slf4j
-public class ContractBusiness extends BaseBusiness implements IContract {
+public class InquiryContractBusiness extends BaseBusiness implements IInquiryContract {
     @Autowired
     private IContractCommon iContractCommon;
 

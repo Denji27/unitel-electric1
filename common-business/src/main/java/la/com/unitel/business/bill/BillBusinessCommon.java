@@ -149,7 +149,9 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
             throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
         Page<Bill> unpaidBill = baseService.getBillService().findUnPaidBillByContractId(contractId, page, size);
-        return generateSuccessResponse(UUID.randomUUID().toString(), unpaidBill);
+        List<UnpaidBillDto> collect = unpaidBill.getContent().parallelStream().map(this::convert).collect(Collectors.toList());
+        Page<UnpaidBillDto> result = new PageImpl<>(collect, unpaidBill.getPageable(), unpaidBill.getTotalElements());
+        return generateSuccessResponse(UUID.randomUUID().toString(), result);
     }
 
     /**
@@ -218,6 +220,7 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
             bill.setStatus(BillStatus.PAID);
             bill.setRemark(payBillRequest.getReason());
             bill.setTransactionId(payBillRequest.getReferenceId());
+            bill.setPaymentMethod(payBillRequest.getPaymentMethod());
             billUpdateList.add(bill);
 
             totalAmount = totalAmount.add(bill.getTotalAmount());

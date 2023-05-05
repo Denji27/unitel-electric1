@@ -20,7 +20,7 @@ import java.util.UUID;
  **/
 @Service
 @Slf4j
-public class ConsumptionBusiness extends BaseBusiness implements IConsumption {
+public class InquiryConsumptionBusiness extends BaseBusiness implements IInquiryConsumption {
     @Autowired
     private IConsumptionCommon iConsumptionCommon;
 
