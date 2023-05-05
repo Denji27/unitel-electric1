@@ -76,6 +76,11 @@ public class ContractServiceImp implements ContractService {
     }
 
     @Override
+    public boolean existsByPhoneNumber(String phoneNumber) {
+        return contractRepo.existsByPhoneNumber(phoneNumber);
+    }
+
+    @Override
     public String findReaderOrCashierByContract(String contractId, String role) {
         try {
             return contractRepo.findReaderOrCashierByContractId(contractId, role).orElse(null);

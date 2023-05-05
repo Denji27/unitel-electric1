@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public class BillServiceImp implements BillService {
     }
 
     @Override
-    public <T> Page<T> searchBill(BillStatus status, LocalDate fromDate, LocalDate toDate, String input, Class<T> type, Pageable pageable) {
+    public <T> Page<T> searchBill(BillStatus status, LocalDateTime fromDate, LocalDateTime toDate, String input, Class<T> type, Pageable pageable) {
         return billRepo.searchBill(status, fromDate, toDate, input, type, pageable);
     }
 

@@ -10,14 +10,12 @@ import java.time.LocalDateTime;
  * @since : 4/15/2023, Sat
  **/
 public interface BillDetailView {
-    String getId();
+    String getBillId();
     String getPhoneNumber();
-    String getAvatarId();
+    String getContractId();
+    String getContractName();
     BillStatus getStatus();
     BigDecimal getTotalAmount();
-    String getDistrict();
-    String getProvince();
-    String getCreatedBy();
-    String getUpdatedBy();
-    LocalDateTime getCreatedAt();
+    LocalDateTime getBillingDate();
+    LocalDateTime getDueDate();
 }

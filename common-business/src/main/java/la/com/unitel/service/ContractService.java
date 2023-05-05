@@ -24,6 +24,7 @@ public interface ContractService {
     List<String> findByIdContractIdAndRole(String contractId, String role);
     List<String> findByIdReaderIdAndRole(String readerId, String role);
     boolean existsByContractName(String meterCode);
+    boolean existsByPhoneNumber(String phoneNumber);
 
     String findReaderOrCashierByContract(String contractId, String role);
 }

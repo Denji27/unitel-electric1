@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public interface BillService {
     List<Bill> saveAll(List<Bill> bills);
     Bill findById(String billId);
     Boolean existsByTransactionId(String transactionId);
-    <T> Page<T> searchBill(BillStatus status, LocalDate fromDate, LocalDate toDate, String input, Class<T> type, Pageable pageable);
+    <T> Page<T> searchBill(BillStatus status, LocalDateTime fromDate, LocalDateTime toDate, String input, Class<T> type, Pageable pageable);
     Page<Bill> findUnPaidBillByCashier(String cashier, int page, int size);
     Page<Bill> findUnPaidBillByContractId(String contractId, int page, int size);
 }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.time.LocalDate;
 
 /**
@@ -40,8 +41,8 @@ public class BillController implements BillAPIs {
     }*/
 
     @Override
-    public ResponseEntity<?> payBill(PayBillRequest payBillRequest) {
-        return ResponseEntity.ok(iPayBill.onPayBill(payBillRequest));
+    public ResponseEntity<?> payBill(PayBillRequest payBillRequest, Principal principal) {
+        return ResponseEntity.ok(iPayBill.onPayBill(payBillRequest, principal));
 
     }
 

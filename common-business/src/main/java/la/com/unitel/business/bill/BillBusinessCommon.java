@@ -9,6 +9,7 @@ import la.com.unitel.business.bill.dto.projection.BillDetailView;
 import la.com.unitel.entity.account.Account;
 import la.com.unitel.entity.constant.BillStatus;
 import la.com.unitel.entity.constant.ConsumptionStatus;
+import la.com.unitel.entity.edl.Province;
 import la.com.unitel.entity.usage_payment.Bill;
 import la.com.unitel.entity.usage_payment.Consumption;
 import la.com.unitel.entity.usage_payment.Contract;
@@ -57,6 +58,7 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
 //                .pic(new PIC(readerList, cashierList))
                 .build();
 
+
         BillResponse billResponse = BillResponse.builder()
                 .billId(billId)
                 .phoneNumber(contract.getPhoneNumber())
@@ -65,17 +67,21 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
                 .meterDevice(consumption.getMeterCode())
                 .period(consumption.getPeriod())
                 .contractName(contract.getName())
+                .contractType(contract.getContractType())
                 .address(contract.getAddress())
                 .readBy(consumption.getReadBy())
                 .cashier(bill.getCashier())
                 .usageConsumption(consumption.getUsageConsumption())
                 .readAt(consumption.getReadAt())
+                .readUnit(consumption.getReadUnit())
                 .billingDate(bill.getCreatedAt())
                 .totalAmount(bill.getTotalAmount())
                 .usageCharge(bill.getUsageCharge())
                 .serviceCharge(bill.getServiceCharge())
                 .tax(bill.getTax())
                 .dueDate(bill.getPaymentDeadline())
+                .paidAt(bill.getPaidAt())
+                .paidBy(bill.getPaidBy())
                 .build();
 
         //TODO add billing range time & due date
@@ -85,15 +91,15 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
 
     @Override
     public CommonResponse onSearchBill(BillStatus status, LocalDate fromDate, LocalDate toDate, String input, Pageable pageable) {
-        Page<BillDetailView> views = baseService.getBillService().searchBill(status, fromDate, toDate, input, BillDetailView.class, pageable);
-        List<BillResponse> collect = views.getContent().parallelStream().map(BillResponse::generate).collect(Collectors.toList());
-        Page<BillResponse> result = new PageImpl<>(collect, pageable, views.getTotalElements());
-        return generateSuccessResponse(UUID.randomUUID().toString(), result);
+        Page<BillDetailView> views = baseService.getBillService().searchBill(status, fromDate.atStartOfDay(), toDate.atStartOfDay().plusDays(1), input,
+                BillDetailView.class, pageable);
+       /* List<BillResponse> collect = views.getContent().parallelStream().map(BillResponse::generate).collect(Collectors.toList());
+        Page<BillResponse> result = new PageImpl<>(collect, pageable, views.getTotalElements());*/
+        return generateSuccessResponse(UUID.randomUUID().toString(), views);
     }
 
     @Override
     public CommonResponse onGetUnPaidBillByCashier(String cashierUsername, int page, int size) {
-        //TODO add payment deadline when create bill
         Account cashier = baseService.getAccountService().findByUsername(cashierUsername);
         if (cashier == null || !cashier.getIsActive())
             throw new ErrorCommon(ErrorCode.CASHIER_INVALID, Translator.toLocale(ErrorCode.CASHIER_INVALID));
@@ -196,6 +202,7 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
     @Transactional
     public CommonResponse onPayBill(PayBillRequest payBillRequest) {
         //TODO lock redis, check duplicate referenceId
+        //TODO add payment method is money in cashier
         if (baseService.getBillService().existsByTransactionId(payBillRequest.getReferenceId()))
             throw new ErrorCommon(ErrorCode.TRANSACTION_INVALID, Translator.toLocale(ErrorCode.TRANSACTION_INVALID));
 

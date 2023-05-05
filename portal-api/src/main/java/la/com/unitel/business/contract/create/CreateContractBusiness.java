@@ -30,9 +30,6 @@ public class CreateContractBusiness extends BaseBusiness implements ICreateContr
     @Override
     @Transactional
     public CommonResponse onCreateContract(CreateContractRequest createContractRequest, Principal principal) {
-        /*if (baseService.getAccountService().existsByUsername(createContractRequest.getUsername()))
-            throw new ErrorCommon(ErrorCode.USERNAME_EXISTED, Translator.toLocale(ErrorCode.USERNAME_EXISTED));*/
-
         District district = baseService.getDistrictService().findById(createContractRequest.getDistrictId());
         if (district == null)
             throw new ErrorCommon(ErrorCode.DISTRICT_INVALID, Translator.toLocale(ErrorCode.DISTRICT_INVALID));
@@ -45,36 +42,14 @@ public class CreateContractBusiness extends BaseBusiness implements ICreateContr
         if (device == null || device.getContractId() != null)
             throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
 
-        /*if (baseService.getContractService().existsByMeterCode(createContractRequest.getDeviceId()))
-            throw new ErrorCommon(ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));*/
-
         if (baseService.getContractService().existsByContractName(createContractRequest.getName()))
             throw new ErrorCommon(ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));
 
+        if (baseService.getContractService().existsByPhoneNumber(baseService.getUtil().toMsisdn(createContractRequest.getPhoneNumber())))
+            throw new ErrorCommon(ErrorCode.PHONE_NUMBER_EXISTED, Translator.toLocale(ErrorCode.PHONE_NUMBER_EXISTED));
+
         //TODO validate readerId & contractId active
-
-        /*UserRepresentation keycloakUser = keycloakUtil.createUser(createContractRequest.getUsername(), createContractRequest.getPassword(),
-                util.toMsisdn(createContractRequest.getPhoneNumber()), district.getName(), createContractRequest.getContractType());
-        if (keycloakUser == null)
-            throw new ErrorCommon(ErrorCode.KEYCLOAK_CREATE_FAILED, Translator.toLocale(ErrorCode.KEYCLOAK_CREATE_FAILED));
-
-        Account account = new Account();
-        account.setId(keycloakUser.getId());
-        account.setUsername(createContractRequest.getUsername());
-        account.setPhoneNumber(util.toMsisdn(createContractRequest.getPhoneNumber()));
-        account.setDistrictId(createContractRequest.getDistrictId());
-        account.setGender(Gender.findByName(createContractRequest.getGender()));
-        account.setAvatarId(account.getGender().equals(Gender.MALE) ? Constant.AVATAR_MALE_DEFAULT : Constant.AVATAR_FEMALE_DEFAULT);
-        account.setAddress(createContractRequest.getAddress());
-        account.setRemark(createContractRequest.getRemark());
-        account.setCreatedBy(principal.getName());
-        account.setIsActive(true);
-        account = accountService.save(account);*/
-
-        /*RoleAccount roleAccount = new RoleAccount();
-        roleAccount.setId(new RoleAccountId(Constant.ENDUSER, account.getId()));
-        roleAccount.setCreatedBy(principal.getName());
-        roleAccount = roleService.saveRoleAccount(roleAccount);*/
+        //TODO set contrain phone number unique
 
         Contract contract = new Contract();
         contract.setName(createContractRequest.getName());
@@ -86,7 +61,6 @@ public class CreateContractBusiness extends BaseBusiness implements ICreateContr
         contract.setAvatarId(contract.getGender().equals(Gender.MALE) ? Constants.AVATAR_MALE_DEFAULT : Constants.AVATAR_FEMALE_DEFAULT);
         contract.setLatitude(createContractRequest.getLatitude());
         contract.setLongitude(createContractRequest.getLongitude());
-//        contract.setMeterCode(createContractRequest.getDeviceId());
         contract.setIsActive(true);
         contract.setAddress(createContractRequest.getAddress());
         contract.setRemark(createContractRequest.getRemark());

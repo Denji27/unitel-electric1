@@ -17,6 +17,7 @@ public interface ContractRepo extends JpaRepository<Contract, String> {
 
     List<Contract> findByIsActiveTrue();
     boolean existsByName(String contractName);
+    boolean existsByPhoneNumber(String phoneNumber);
 
     @Query(value = "select c.id as id, c.name as name, c.avatarId as avatarId, c.phoneNumber as phoneNumber, c.gender as gender,\n" +
             "d.name as district, p.name as province, c.contractType as contractType, md.id as meterCode, \n" +

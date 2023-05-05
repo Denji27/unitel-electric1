@@ -34,7 +34,6 @@ public class Contract implements Serializable {
 
     @Column(unique = true, nullable = false)
     private String phoneNumber;
-    //TODO check phone number exist when create contract
 
     @Column(nullable = false)
     private String districtId;

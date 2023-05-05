@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.time.LocalDate;
 
 /**
@@ -19,14 +20,14 @@ import java.time.LocalDate;
 @Validated
 public interface BillAPIs {
 
-    @GetMapping("view/{billId}")
+    @GetMapping("{billId}")
     ResponseEntity<?> viewBillDetail(@PathVariable String billId);
 
     /*@PostMapping("view/batch")
     ResponseEntity<?> viewBillDetailInBatch(@Valid @RequestBody CheckBillRequest checkBillRequest);*/
 
     @PostMapping("action/pay")
-    ResponseEntity<?> payBill(@Valid @RequestBody PayBillRequest payBillRequest);
+    ResponseEntity<?> payBill(@Valid @RequestBody PayBillRequest payBillRequest, Principal principal);
 
     @GetMapping
     ResponseEntity<?> search(@RequestParam(required = false, defaultValue = "PAID") BillStatus status,
