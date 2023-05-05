@@ -1,6 +1,7 @@
 package la.com.unitel.business.account.create.dto;
 
 import la.com.unitel.BaseRequest;
+import la.com.unitel.exception.validation.DateRegex;
 import la.com.unitel.exception.validation.GenderRegex;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,9 @@ public class CreateAccountRequest extends BaseRequest {
 
     @GenderRegex
     private String gender;
+
+    @DateRegex
+    private String dateOfBirth;
     private String department;
     private String position;
     private String address;

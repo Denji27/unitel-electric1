@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author : Tungct
@@ -63,6 +66,8 @@ public class CreateAccountBusiness extends BaseBusiness implements ICreateAccoun
         account.setAddress(createAccountRequest.getAddress());
         account.setRemark(createAccountRequest.getRemark());
         account.setCreatedBy(principal.getName());
+        if (createAccountRequest.getDateOfBirth() != null)
+            account.setDateOfBirth(LocalDate.parse(createAccountRequest.getDateOfBirth(), DateTimeFormatter.ofPattern("dd/MM/yyyy")).atStartOfDay());
         account.setIsActive(true);
         account = baseService.getAccountService().save(account);
 

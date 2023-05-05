@@ -21,5 +21,6 @@ public interface AccountDetailView {
     String getUpdatedBy();
     Boolean getIsActive();
     LocalDateTime getCreatedAt();
+    LocalDateTime getDateOfBirth();
     String getRoles();
 }

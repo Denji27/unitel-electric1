@@ -13,4 +13,5 @@ public class UpdateDeviceRequest extends BaseRequest {
     private String brand;
     private Integer maximumUnit;
     private String remark;
+    private Boolean isActive;
 }

@@ -28,6 +28,7 @@ public class AccountDetail {
     private String updatedBy;
     private Boolean isActive;
     private LocalDateTime createdAt;
+    private LocalDateTime dateOfBirth;
 
     public static AccountDetail generate(AccountDetailView view){
         return AccountDetail.builder()
@@ -46,6 +47,7 @@ public class AccountDetail {
                 .isActive(view.getIsActive())
                 .createdAt(view.getCreatedAt())
                 .roles(view.getRoles())
+                .dateOfBirth(view.getDateOfBirth())
                 .build();
     }
 }

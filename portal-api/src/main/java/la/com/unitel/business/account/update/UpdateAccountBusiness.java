@@ -21,6 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -91,6 +94,8 @@ public class UpdateAccountBusiness extends BaseBusiness implements IUpdateAccoun
         if (updateAccountRequest.getPosition() != null) account.setPosition(updateAccountRequest.getPosition());
         if (updateAccountRequest.getAddress() != null) account.setAddress(updateAccountRequest.getAddress());
         if (updateAccountRequest.getRemark() != null) account.setRemark(updateAccountRequest.getRemark());
+        if (updateAccountRequest.getDateOfBirth() != null)
+            account.setDateOfBirth(LocalDate.parse(updateAccountRequest.getDateOfBirth(), DateTimeFormatter.ofPattern("dd/MM/yyyy")).atStartOfDay());
         account.setUpdatedBy(principal.getName());
         account = baseService.getAccountService().save(account);
 

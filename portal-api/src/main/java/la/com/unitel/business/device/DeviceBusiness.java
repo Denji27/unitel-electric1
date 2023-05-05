@@ -55,6 +55,7 @@ public class DeviceBusiness extends BaseBusiness implements IDevice {
         if (updateDeviceRequest.getBrand() != null) device.setBrand(updateDeviceRequest.getBrand());
         if (updateDeviceRequest.getMaximumUnit() != null) device.setMaximumUnit(updateDeviceRequest.getMaximumUnit());
         if (updateDeviceRequest.getRemark() != null) device.setRemark(updateDeviceRequest.getRemark());
+        device.setIsActive(updateDeviceRequest.getIsActive());
         device = baseService.getDeviceService().save(device);
 
         return generateSuccessResponse(updateDeviceRequest.getRequestId(), device);
@@ -82,7 +83,6 @@ public class DeviceBusiness extends BaseBusiness implements IDevice {
         device.setUpdatedBy(principal.getName());
         device = baseService.getDeviceService().save(device);
         return generateSuccessResponse(UUID.randomUUID().toString(), device);
-
     }
 
     @Override
