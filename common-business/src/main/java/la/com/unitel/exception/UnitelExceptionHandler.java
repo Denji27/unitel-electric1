@@ -73,7 +73,7 @@ public class UnitelExceptionHandler {
             ErrorCommon.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public CommonResponse inputInvalid(ErrorCommon ex, WebRequest request) {
-        return new CommonResponse(ex.getRequestId(), ex.getErrorCode(), Translator.toLocale(ex.getErrorCode()));
+        return new CommonResponse(ex.getRequestId(), ex.getErrorCode(), Translator.toLocale(ex.getErrorCode()), null);
     }
 
 

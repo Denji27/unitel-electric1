@@ -32,21 +32,21 @@ public class CreateContractBusiness extends BaseBusiness implements ICreateContr
     public CommonResponse onCreateContract(CreateContractRequest createContractRequest, Principal principal) {
         District district = baseService.getDistrictService().findById(createContractRequest.getDistrictId());
         if (district == null)
-            throw new ErrorCommon(ErrorCode.DISTRICT_INVALID, Translator.toLocale(ErrorCode.DISTRICT_INVALID));
+            throw new ErrorCommon(createContractRequest.getRequestId(), ErrorCode.DISTRICT_INVALID, Translator.toLocale(ErrorCode.DISTRICT_INVALID));
 
         boolean isValidContractType = baseService.getContractTypeService().existsByCode(createContractRequest.getContractType());
         if (!isValidContractType)
-            throw new ErrorCommon(ErrorCode.CONTRACT_TYPE_INVALID, Translator.toLocale(ErrorCode.CONTRACT_TYPE_INVALID));
+            throw new ErrorCommon(createContractRequest.getRequestId(), ErrorCode.CONTRACT_TYPE_INVALID, Translator.toLocale(ErrorCode.CONTRACT_TYPE_INVALID));
 
         MeterDevice device = baseService.getDeviceService().findById(createContractRequest.getDeviceId());
         if (device == null || device.getContractId() != null)
-            throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
+            throw new ErrorCommon(createContractRequest.getRequestId(), ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
 
         if (baseService.getContractService().existsByContractName(createContractRequest.getName()))
-            throw new ErrorCommon(ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));
+            throw new ErrorCommon(createContractRequest.getRequestId(), ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));
 
         if (baseService.getContractService().existsByPhoneNumber(baseService.getUtil().toMsisdn(createContractRequest.getPhoneNumber())))
-            throw new ErrorCommon(ErrorCode.PHONE_NUMBER_EXISTED, Translator.toLocale(ErrorCode.PHONE_NUMBER_EXISTED));
+            throw new ErrorCommon(createContractRequest.getRequestId(), ErrorCode.PHONE_NUMBER_EXISTED, Translator.toLocale(ErrorCode.PHONE_NUMBER_EXISTED));
 
         //TODO validate readerId & contractId active
         //TODO set contrain phone number unique

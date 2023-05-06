@@ -35,4 +35,11 @@ public class CommonResponse {
         this.message = message;
         this.result = result;
     }
+
+    public CommonResponse(String requestId, String errorCode, String message, Object result) {
+        this.requestId = requestId;
+        this.errorCode = errorCode;
+        this.message = message;
+        this.result = result;
+    }
 }

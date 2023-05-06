@@ -9,6 +9,7 @@ import la.com.unitel.controller.AccountAPIs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,7 @@ import java.security.Principal;
  * @since : 4/15/2023, Sat
  **/
 @RestController
+@CrossOrigin
 public class AccountController implements AccountAPIs {
     @Autowired
     private ICreateAccount iCreateAccount;

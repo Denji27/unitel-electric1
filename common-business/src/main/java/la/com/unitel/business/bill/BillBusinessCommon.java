@@ -42,15 +42,15 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
     public CommonResponse onViewBillDetail(String billId) {
         Bill bill = baseService.getBillService().findById(billId);
         if (bill == null)
-            throw new ErrorCommon(ErrorCode.BILL_INVALID, Translator.toLocale(ErrorCode.BILL_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.BILL_INVALID, Translator.toLocale(ErrorCode.BILL_INVALID));
 
         Contract contract = baseService.getContractService().findById(bill.getContractId());
         if (contract == null)
-            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
         Consumption consumption = baseService.getConsumptionService().findById(bill.getUsageId());
         if (consumption == null)
-            throw new ErrorCommon(ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
 
         BillUsageDetail billUsageDetail = BillUsageDetail.builder()
                 .bill(bill)
@@ -102,7 +102,7 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
     public CommonResponse onGetUnPaidBillByCashier(String cashierUsername, int page, int size) {
         Account cashier = baseService.getAccountService().findByUsername(cashierUsername);
         if (cashier == null || !cashier.getIsActive())
-            throw new ErrorCommon(ErrorCode.CASHIER_INVALID, Translator.toLocale(ErrorCode.CASHIER_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.CASHIER_INVALID, Translator.toLocale(ErrorCode.CASHIER_INVALID));
 
         /*Page<HistoryReadView> views = consumptionService.findByCreatedAtAndReader(fromDate, toDate, reader.getUsername(), HistoryReadView.class, pageable);
         List<HistoryRead> collect = views.getContent().parallelStream().map(HistoryRead::generate).collect(Collectors.toList());
@@ -117,11 +117,11 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
     private UnpaidBillDto convert(Bill b) {
         Consumption consumption = baseService.getConsumptionService().findById(b.getUsageId());
         if (consumption == null || !consumption.getStatus().equals(ConsumptionStatus.READ))
-            throw new ErrorCommon(ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
 
         Contract contract = baseService.getContractService().findById(consumption.getContractId());
         if (contract == null || !contract.getIsActive())
-            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
         return UnpaidBillDto.builder()
                 .billId(b.getId())
@@ -146,7 +146,7 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
     public CommonResponse onGetUnPaidBillByContract(String contractId, int page, int size) {
         Contract contract = baseService.getContractService().findById(contractId);
         if (contract == null || !contract.getIsActive())
-            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
         Page<Bill> unpaidBill = baseService.getBillService().findUnPaidBillByContractId(contractId, page, size);
         List<UnpaidBillDto> collect = unpaidBill.getContent().parallelStream().map(this::convert).collect(Collectors.toList());
@@ -164,18 +164,18 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
     public CommonResponse onViewBillInBatch(CheckBillRequest checkBillRequest) {
         Contract contract = baseService.getContractService().findById(checkBillRequest.getContractId());
         if (contract == null)
-            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+            throw new ErrorCommon(checkBillRequest.getRequestId(), ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
         List<BillUsageDetail> billUsageDetails = new ArrayList<>();
         double totalAmount = 0D;
         for (String billId : checkBillRequest.getBillIds()) {
             Bill bill = baseService.getBillService().findById(billId);
             if (bill == null || !bill.getStatus().equals(BillStatus.UNPAID) || !bill.getContractId().equals(checkBillRequest.getContractId()))
-                throw new ErrorCommon(ErrorCode.BILL_INVALID, Translator.toLocale(ErrorCode.BILL_INVALID));
+                throw new ErrorCommon(checkBillRequest.getRequestId(), ErrorCode.BILL_INVALID, Translator.toLocale(ErrorCode.BILL_INVALID));
 
             Consumption consumption = baseService.getConsumptionService().findById(bill.getUsageId());
             if (consumption == null || !consumption.getStatus().equals(ConsumptionStatus.READ))
-                throw new ErrorCommon(ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
+                throw new ErrorCommon(checkBillRequest.getRequestId(), ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
 
             BillUsageDetail billUsageDetail = BillUsageDetail.builder()
                     .bill(bill)
@@ -206,14 +206,14 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
         //TODO lock redis, check duplicate referenceId
         //TODO add payment method is money in cashier
         if (baseService.getBillService().existsByTransactionId(payBillRequest.getReferenceId()))
-            throw new ErrorCommon(ErrorCode.TRANSACTION_INVALID, Translator.toLocale(ErrorCode.TRANSACTION_INVALID));
+            throw new ErrorCommon(payBillRequest.getRequestId(), ErrorCode.TRANSACTION_INVALID, Translator.toLocale(ErrorCode.TRANSACTION_INVALID));
 
         List<Bill> billUpdateList = new ArrayList<>();
         BigDecimal totalAmount = BigDecimal.ZERO;
         for (String billId : payBillRequest.getBillIds()) {
             Bill bill = baseService.getBillService().findById(billId);
             if (bill == null || !bill.getStatus().equals(BillStatus.UNPAID) || !bill.getContractId().equals(payBillRequest.getContractId()))
-                throw new ErrorCommon(ErrorCode.BILL_INVALID, Translator.toLocale(ErrorCode.BILL_INVALID));
+                throw new ErrorCommon(payBillRequest.getRequestId(), ErrorCode.BILL_INVALID, Translator.toLocale(ErrorCode.BILL_INVALID));
 
             bill.setPaidBy(payBillRequest.getPaidBy());
             bill.setPaidAt(LocalDateTime.now());
@@ -227,7 +227,7 @@ public class BillBusinessCommon extends BaseBusiness implements IBillCommon {
         }
 
         if (totalAmount.compareTo(payBillRequest.getTotalAmount()) != 0)
-            throw new ErrorCommon(ErrorCode.AMOUNT_INVALID, Translator.toLocale(ErrorCode.AMOUNT_INVALID));
+            throw new ErrorCommon(payBillRequest.getRequestId(), ErrorCode.AMOUNT_INVALID, Translator.toLocale(ErrorCode.AMOUNT_INVALID));
 
         baseService.getBillService().saveAll(billUpdateList);
         return generateSuccessResponse(UUID.randomUUID().toString(), null);

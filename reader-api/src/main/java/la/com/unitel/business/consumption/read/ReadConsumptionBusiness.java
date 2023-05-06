@@ -45,28 +45,28 @@ public class ReadConsumptionBusiness extends BaseBusiness implements IReadConsum
         //TODO check case request period not null
         MeterDevice device = baseService.getDeviceService().findById(readConsumptionRequest.getMeterCode());
         if (device == null || !device.getIsActive() || device.getContractId() == null || !Objects.equals(device.getContractId(), contractId))
-            throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
+            throw new ErrorCommon(readConsumptionRequest.getRequestId(), ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
 
         Contract contract = baseService.getContractService().findById(device.getContractId());
         if (contract == null || !contract.getIsActive())
-            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+            throw new ErrorCommon(readConsumptionRequest.getRequestId(), ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
         Consumption consumption = baseService.getConsumptionService().findByContractIdAndPeriod(contractId, baseService.getUtil().getMonthCode(LocalDate.now()));
         if (consumption == null || consumption.getStatus().equals(ConsumptionStatus.READ))
-            throw new ErrorCommon(ErrorCode.CONSUMPTION_ALREADY_READ_OR_NOT_FOUND, Translator.toLocale(ErrorCode.CONSUMPTION_ALREADY_READ_OR_NOT_FOUND));
+            throw new ErrorCommon(readConsumptionRequest.getRequestId(), ErrorCode.CONSUMPTION_ALREADY_READ_OR_NOT_FOUND, Translator.toLocale(ErrorCode.CONSUMPTION_ALREADY_READ_OR_NOT_FOUND));
 
         Account reader = baseService.getAccountService().findByUsername(principal.getName());
         if (reader == null || !reader.getIsActive())
-            throw new ErrorCommon(ErrorCode.READER_INVALID, Translator.toLocale(ErrorCode.READER_INVALID));
+            throw new ErrorCommon(readConsumptionRequest.getRequestId(), ErrorCode.READER_INVALID, Translator.toLocale(ErrorCode.READER_INVALID));
 
         boolean isValidReaderContract = baseService.getContractService().existsByIdReaderIdAndIdContractIdAndRole(reader.getId(), contract.getId(), Constants.READER);
         if (!isValidReaderContract)
-            throw new ErrorCommon(ErrorCode.READER_INVALID, Translator.toLocale(ErrorCode.READER_INVALID));
+            throw new ErrorCommon(readConsumptionRequest.getRequestId(), ErrorCode.READER_INVALID, Translator.toLocale(ErrorCode.READER_INVALID));
 
         //find Cashier
         String cashier = baseService.getContractService().findReaderOrCashierByContract(contractId, Constants.CASHIER);
         if (cashier == null)
-            throw new ErrorCommon(ErrorCode.CASHIER_INVALID, Translator.toLocale(ErrorCode.CASHIER_INVALID));
+            throw new ErrorCommon(readConsumptionRequest.getRequestId(), ErrorCode.CASHIER_INVALID, Translator.toLocale(ErrorCode.CASHIER_INVALID));
 
 //        find last month consumption
         int lastConsumption = 0;
@@ -76,7 +76,7 @@ public class ReadConsumptionBusiness extends BaseBusiness implements IReadConsum
         } else {
             Consumption lastMonthConsumption = baseService.getConsumptionService().findByContractIdAndPeriod(contract.getId(), baseService.getUtil().getMonthCode(LocalDate.now().minusMonths(1)));
             if (lastMonthConsumption == null || !lastMonthConsumption.getStatus().equals(ConsumptionStatus.READ))
-                throw new ErrorCommon(ErrorCode.LAST_MONTH_CONSUMPTION_NOT_FOUND, Translator.toLocale(ErrorCode.LAST_MONTH_CONSUMPTION_NOT_FOUND));
+                throw new ErrorCommon(readConsumptionRequest.getRequestId(), ErrorCode.LAST_MONTH_CONSUMPTION_NOT_FOUND, Translator.toLocale(ErrorCode.LAST_MONTH_CONSUMPTION_NOT_FOUND));
 
             lastConsumption = lastMonthConsumption.getReadUnit();
         }
@@ -152,7 +152,7 @@ public class ReadConsumptionBusiness extends BaseBusiness implements IReadConsum
         }
 
         if (fileId == null)
-            throw new ErrorCommon(ErrorCode.FILE_UPLOAD_ERROR, Translator.toLocale(ErrorCode.FILE_UPLOAD_ERROR));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.FILE_UPLOAD_ERROR, Translator.toLocale(ErrorCode.FILE_UPLOAD_ERROR));
         return generateSuccessResponse(UUID.randomUUID().toString(), "https://s3.mytel.com.mm/electric/" + fileId);
     }
 }

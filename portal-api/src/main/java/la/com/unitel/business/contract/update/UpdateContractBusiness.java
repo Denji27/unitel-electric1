@@ -36,15 +36,15 @@ public class UpdateContractBusiness extends BaseBusiness implements IUpdateContr
     public CommonResponse onUpdateContract(String contractId, UpdateContractRequest updateContractRequest, Principal principal) {
         Contract contract = baseService.getContractService().findById(contractId);
         if (contract == null)
-            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+            throw new ErrorCommon(updateContractRequest.getRequestId(), ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
         District district = baseService.getDistrictService().findById(updateContractRequest.getDistrictId());
         if (district == null)
-            throw new ErrorCommon(ErrorCode.DISTRICT_INVALID, Translator.toLocale(ErrorCode.DISTRICT_INVALID));
+            throw new ErrorCommon(updateContractRequest.getRequestId(), ErrorCode.DISTRICT_INVALID, Translator.toLocale(ErrorCode.DISTRICT_INVALID));
 
         boolean isValidContractType = baseService.getContractTypeService().existsByCode(updateContractRequest.getContractType());
         if (!isValidContractType)
-            throw new ErrorCommon(ErrorCode.CONTRACT_TYPE_INVALID, Translator.toLocale(ErrorCode.CONTRACT_TYPE_INVALID));
+            throw new ErrorCommon(updateContractRequest.getRequestId(), ErrorCode.CONTRACT_TYPE_INVALID, Translator.toLocale(ErrorCode.CONTRACT_TYPE_INVALID));
 
         /*Account account = accountService.findById(contract.getAccountId());
         if (account == null)
@@ -89,7 +89,7 @@ public class UpdateContractBusiness extends BaseBusiness implements IUpdateContr
     public CommonResponse onUploadAvatar(String contractId, MultipartFile file, Principal principal) {
         Contract contract = baseService.getContractService().findById(contractId);
         if (contract == null)
-            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
        /* Account account = accountService.findById(contract.getAccountId());
         if (account == null)
@@ -104,7 +104,7 @@ public class UpdateContractBusiness extends BaseBusiness implements IUpdateContr
         }
 
         if (fileId == null)
-            throw new ErrorCommon(ErrorCode.FILE_UPLOAD_ERROR, Translator.toLocale(ErrorCode.FILE_UPLOAD_ERROR));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.FILE_UPLOAD_ERROR, Translator.toLocale(ErrorCode.FILE_UPLOAD_ERROR));
 
         /*if (account.getAvatarId() != null) {
             log.info("Delete old avatar");

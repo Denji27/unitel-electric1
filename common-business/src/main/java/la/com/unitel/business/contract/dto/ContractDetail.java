@@ -24,7 +24,7 @@ public class ContractDetail {
     private String meterCode;
     private String latitude;
     private String longitude;
-    private Boolean isAcive;
+    private Boolean isActive;
     private String address;
     private String remark;
     private String createdBy;
@@ -44,7 +44,7 @@ public class ContractDetail {
                 .meterCode(view.getMeterCode())
                 .latitude(view.getLatitude())
                 .longitude(view.getLongitude())
-                .isAcive(view.getIsActive())
+                .isActive(view.getIsActive())
                 .address(view.getAddress())
                 .remark(view.getRemark())
                 .createdBy(view.getCreatedBy())

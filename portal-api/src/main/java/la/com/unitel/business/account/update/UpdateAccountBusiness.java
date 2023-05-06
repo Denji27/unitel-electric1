@@ -45,26 +45,26 @@ public class UpdateAccountBusiness extends BaseBusiness implements IUpdateAccoun
     public CommonResponse onUpdateAccount(String accountId, UpdateAccountRequest updateAccountRequest, Principal principal) {
         Account account = baseService.getAccountService().findById(accountId);
         if (account == null)
-            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+            throw new ErrorCommon(updateAccountRequest.getRequestId(), ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
 
         String invalidRole = updateAccountRequest.getRoleList().parallelStream().filter(role -> !baseService.getRoleService().existsByCode(role)).findFirst().orElse(null);
         if (invalidRole != null)
-            throw new ErrorCommon(ErrorCode.ROLE_INVALID, Translator.toLocale(ErrorCode.ROLE_INVALID));
+            throw new ErrorCommon(updateAccountRequest.getRequestId(), ErrorCode.ROLE_INVALID, Translator.toLocale(ErrorCode.ROLE_INVALID));
 
         District district = baseService.getDistrictService().findById(updateAccountRequest.getDistrictId());
         if (district == null)
-            throw new ErrorCommon(ErrorCode.DISTRICT_INVALID, Translator.toLocale(ErrorCode.DISTRICT_INVALID));
+            throw new ErrorCommon(updateAccountRequest.getRequestId(), ErrorCode.DISTRICT_INVALID, Translator.toLocale(ErrorCode.DISTRICT_INVALID));
 
         if (baseService.getAccountService().isPhoneNumberExistedForEDL(baseService.getUtil().toMsisdn(updateAccountRequest.getPhoneNumber()), accountId))
-            throw new ErrorCommon(ErrorCode.PHONE_NUMBER_EXISTED, Translator.toLocale(ErrorCode.PHONE_NUMBER_EXISTED));
+            throw new ErrorCommon(updateAccountRequest.getRequestId(), ErrorCode.PHONE_NUMBER_EXISTED, Translator.toLocale(ErrorCode.PHONE_NUMBER_EXISTED));
 
         UserRepresentation keycloakUser = keycloakUtil.findByUsername(account.getUsername());
         if (keycloakUser == null)
-            throw new ErrorCommon(ErrorCode.KEYCLOAK_USER_NOT_FOUND, Translator.toLocale(ErrorCode.KEYCLOAK_USER_NOT_FOUND));
+            throw new ErrorCommon(updateAccountRequest.getRequestId(), ErrorCode.KEYCLOAK_USER_NOT_FOUND, Translator.toLocale(ErrorCode.KEYCLOAK_USER_NOT_FOUND));
 
         boolean isUserUpdated = keycloakUtil.updateUser(keycloakUser.getId(), updateAccountRequest.getPassword(), updateAccountRequest.getPhoneNumber(), district.getName(), null);
         if (!isUserUpdated)
-            throw new ErrorCommon(ErrorCode.KEYCLOAK_UPDATE_FAILED, Translator.toLocale(ErrorCode.KEYCLOAK_UPDATE_FAILED));
+            throw new ErrorCommon(updateAccountRequest.getRequestId(), ErrorCode.KEYCLOAK_UPDATE_FAILED, Translator.toLocale(ErrorCode.KEYCLOAK_UPDATE_FAILED));
 
         List<RoleAccount> roleAccountList = baseService.getRoleService().findByIdAccountId(accountId);
         Set<String> currentRoleSet = roleAccountList.parallelStream().map(roleAccount -> roleAccount.getId().getRoleCode()).collect(Collectors.toSet());
@@ -76,7 +76,7 @@ public class UpdateAccountBusiness extends BaseBusiness implements IUpdateAccoun
         } else {
             boolean isRoleUpdated = keycloakUtil.updateRoleUser(keycloakUser.getId(), updateAccountRequest.getRoleList());
             if (!isRoleUpdated)
-                throw new ErrorCommon(ErrorCode.KEYCLOAK_UPDATE_FAILED, Translator.toLocale(ErrorCode.KEYCLOAK_UPDATE_FAILED));
+                throw new ErrorCommon(updateAccountRequest.getRequestId(), ErrorCode.KEYCLOAK_UPDATE_FAILED, Translator.toLocale(ErrorCode.KEYCLOAK_UPDATE_FAILED));
 
             baseService.getRoleService().deleteRoleAccountList(roleAccountList);
             for (String roleCode : updateAccountRequest.getRoleList()) {
@@ -106,7 +106,7 @@ public class UpdateAccountBusiness extends BaseBusiness implements IUpdateAccoun
     public CommonResponse onUploadAvatar(String accountId, MultipartFile file, Principal principal) {
         Account account = baseService.getAccountService().findById(accountId);
         if (account == null)
-            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
 
         String fileId = null;
 
@@ -117,7 +117,7 @@ public class UpdateAccountBusiness extends BaseBusiness implements IUpdateAccoun
         }
 
         if (fileId == null)
-            throw new ErrorCommon(ErrorCode.FILE_UPLOAD_ERROR, Translator.toLocale(ErrorCode.FILE_UPLOAD_ERROR));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.FILE_UPLOAD_ERROR, Translator.toLocale(ErrorCode.FILE_UPLOAD_ERROR));
 
         if (account.getAvatarId() != null) {
             log.info("Delete old avatar");
@@ -136,7 +136,7 @@ public class UpdateAccountBusiness extends BaseBusiness implements IUpdateAccoun
     public CommonResponse onChangeAccountStatus(String accountId) {
         Account account = baseService.getAccountService().findById(accountId);
         if (account == null)
-            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
 
         account.setIsActive(!account.getIsActive());
         account = baseService.getAccountService().save(account);

@@ -18,6 +18,7 @@ import java.time.LocalDate;
  **/
 @RequestMapping("bill")
 @Validated
+@CrossOrigin
 public interface BillAPIs {
 
     @GetMapping("{billId}")

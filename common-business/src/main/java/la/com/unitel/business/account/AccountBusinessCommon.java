@@ -30,7 +30,7 @@ public class AccountBusinessCommon extends BaseBusiness implements IAccountCommo
     public CommonResponse onViewAccountDetail(String accountId) {
         Account account = baseService.getAccountService().findById(accountId);
         if (account == null)
-            throw new ErrorCommon(ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.ACCOUNT_INVALID, Translator.toLocale(ErrorCode.ACCOUNT_INVALID));
 
         AccountDetail result = AccountDetail.generate(baseService.getAccountService().findAccountDetail(accountId, AccountDetailView.class));
         return generateSuccessResponse(UUID.randomUUID().toString(), result);

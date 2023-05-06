@@ -36,23 +36,23 @@ public class CreateAccountBusiness extends BaseBusiness implements ICreateAccoun
     @Transactional
     public CommonResponse onCreateAccount(CreateAccountRequest createAccountRequest, Principal principal) {
         if (baseService.getAccountService().existsByUsername(createAccountRequest.getUsername()))
-            throw new ErrorCommon(ErrorCode.USERNAME_EXISTED, Translator.toLocale(ErrorCode.USERNAME_EXISTED));
+            throw new ErrorCommon(createAccountRequest.getRequestId(), ErrorCode.USERNAME_EXISTED, Translator.toLocale(ErrorCode.USERNAME_EXISTED));
 
         String invalidRole = createAccountRequest.getRoleList().parallelStream().filter(role -> !baseService.getRoleService().existsByCode(role)).findFirst().orElse(null);
         if (invalidRole != null || createAccountRequest.getRoleList().contains(Constants.ENDUSER))
-            throw new ErrorCommon(ErrorCode.ROLE_INVALID, Translator.toLocale(ErrorCode.ROLE_INVALID));
+            throw new ErrorCommon(createAccountRequest.getRequestId(), ErrorCode.ROLE_INVALID, Translator.toLocale(ErrorCode.ROLE_INVALID));
 
         District district = baseService.getDistrictService().findById(createAccountRequest.getDistrictId());
         if (district == null)
-            throw new ErrorCommon(ErrorCode.DISTRICT_INVALID, Translator.toLocale(ErrorCode.DISTRICT_INVALID));
+            throw new ErrorCommon(createAccountRequest.getRequestId(), ErrorCode.DISTRICT_INVALID, Translator.toLocale(ErrorCode.DISTRICT_INVALID));
 
         if (baseService.getAccountService().isPhoneNumberExistedForEDL(baseService.getUtil().toMsisdn(createAccountRequest.getPhoneNumber()), null))
-            throw new ErrorCommon(ErrorCode.PHONE_NUMBER_EXISTED, Translator.toLocale(ErrorCode.PHONE_NUMBER_EXISTED));
+            throw new ErrorCommon(createAccountRequest.getRequestId(), ErrorCode.PHONE_NUMBER_EXISTED, Translator.toLocale(ErrorCode.PHONE_NUMBER_EXISTED));
 
         UserRepresentation keycloakUser = keycloakUtil.createUser(createAccountRequest.getUsername(), createAccountRequest.getPassword(), createAccountRequest.getRoleList(),
                 baseService.getUtil().toMsisdn(createAccountRequest.getPhoneNumber()), district.getName(), null);
         if (keycloakUser == null)
-            throw new ErrorCommon(ErrorCode.KEYCLOAK_CREATE_FAILED, Translator.toLocale(ErrorCode.KEYCLOAK_CREATE_FAILED));
+            throw new ErrorCommon(createAccountRequest.getRequestId(), ErrorCode.KEYCLOAK_CREATE_FAILED, Translator.toLocale(ErrorCode.KEYCLOAK_CREATE_FAILED));
 
         Account account = new Account();
         account.setId(keycloakUser.getId());

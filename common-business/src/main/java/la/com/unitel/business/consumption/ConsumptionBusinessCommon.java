@@ -34,7 +34,7 @@ public class ConsumptionBusinessCommon extends BaseBusiness implements IConsumpt
     public CommonResponse onGetUnReadByReader(String readerUsername, int page, int size) {
         Account reader = baseService.getAccountService().findByUsername(readerUsername);
         if (reader == null || !reader.getIsActive())
-            throw new ErrorCommon(ErrorCode.READER_INVALID, Translator.toLocale(ErrorCode.READER_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.READER_INVALID, Translator.toLocale(ErrorCode.READER_INVALID));
 
 //        find unread list
         Page<Consumption> unreadList = baseService.getConsumptionService().findUnReadByReaderTillNow(readerUsername, page, size);
@@ -53,7 +53,7 @@ public class ConsumptionBusinessCommon extends BaseBusiness implements IConsumpt
     public CommonResponse onGetReadHistoryByReader(String readerUsername, LocalDate fromDate, LocalDate toDate, int page, int size) {
         Account reader = baseService.getAccountService().findByUsername(readerUsername);
         if (reader == null || !reader.getIsActive())
-            throw new ErrorCommon(ErrorCode.READER_INVALID, Translator.toLocale(ErrorCode.READER_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.READER_INVALID, Translator.toLocale(ErrorCode.READER_INVALID));
 
         /*Page<HistoryReadView> views = consumptionService.findByCreatedAtAndReader(fromDate, toDate, reader.getUsername(), HistoryReadView.class, pageable);
         List<HistoryRead> collect = views.getContent().parallelStream().map(HistoryRead::generate).collect(Collectors.toList());
@@ -68,11 +68,11 @@ public class ConsumptionBusinessCommon extends BaseBusiness implements IConsumpt
     private ReadConsumptionDto convert(Consumption c) {
         Contract contract = baseService.getContractService().findById(c.getContractId());
         if (contract == null || !contract.getIsActive())
-            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
         MeterDevice device = baseService.getDeviceService().findByContractIdAndIsActiveTrue(c.getContractId());
         if (device == null)
-            throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
 
         return ReadConsumptionDto.builder()
                 .consumptionId(c.getId())
@@ -91,7 +91,7 @@ public class ConsumptionBusinessCommon extends BaseBusiness implements IConsumpt
     public CommonResponse onConsumptionDetail(String consumptionId) {
         Consumption consumption = baseService.getConsumptionService().findById(consumptionId);
         if (consumption == null || !consumption.getStatus().equals(ConsumptionStatus.READ))
-            throw new ErrorCommon(ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.CONSUMPTION_INVALID, Translator.toLocale(ErrorCode.CONSUMPTION_INVALID));
 
         return generateSuccessResponse(UUID.randomUUID().toString(), detailConvert(consumption));
     }
@@ -99,7 +99,7 @@ public class ConsumptionBusinessCommon extends BaseBusiness implements IConsumpt
     private ConsumptionDetailDto detailConvert(Consumption c) {
         Contract contract = baseService.getContractService().findById(c.getContractId());
         if (contract == null || !contract.getIsActive())
-            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
         return ConsumptionDetailDto.builder()
                 .consumptionId(c.getId())
@@ -124,7 +124,7 @@ public class ConsumptionBusinessCommon extends BaseBusiness implements IConsumpt
     public CommonResponse onGetConsumptionHistoryByContractId(String contractId, LocalDate fromDate, LocalDate toDate, int page, int size) {
         Contract contract = baseService.getContractService().findById(contractId);
         if (contract == null || !contract.getIsActive())
-            throw new ErrorCommon(ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.CONTRACT_INVALID, Translator.toLocale(ErrorCode.CONTRACT_INVALID));
 
         Page<Consumption> histories = baseService.getConsumptionService().findConsumptionByContractId(contractId, fromDate, toDate, page, size);
         return generateSuccessResponse(UUID.randomUUID().toString(), histories);

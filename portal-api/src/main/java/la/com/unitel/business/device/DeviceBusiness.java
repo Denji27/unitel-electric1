@@ -30,7 +30,7 @@ public class DeviceBusiness extends BaseBusiness implements IDevice {
     @Override
     public CommonResponse onCreateDevice(CreateDeviceRequest createDeviceRequest, Principal principal) {
         if (baseService.getDeviceService().existsByName(createDeviceRequest.getName()))
-            throw new ErrorCommon(ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));
+            throw new ErrorCommon(createDeviceRequest.getRequestId(), ErrorCode.DEVICE_EXISTED, Translator.toLocale(ErrorCode.DEVICE_EXISTED));
 
         MeterDevice device = new MeterDevice();
         device.setName(createDeviceRequest.getName());
@@ -49,7 +49,7 @@ public class DeviceBusiness extends BaseBusiness implements IDevice {
     public CommonResponse onUpdateDevice(String deviceId, UpdateDeviceRequest updateDeviceRequest, Principal principal) {
         MeterDevice device = baseService.getDeviceService().findById(deviceId);
         if (device == null)
-            throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
+            throw new ErrorCommon(updateDeviceRequest.getRequestId(), ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
 
         if (updateDeviceRequest.getDescription() != null) device.setDescription(updateDeviceRequest.getDescription());
         if (updateDeviceRequest.getBrand() != null) device.setBrand(updateDeviceRequest.getBrand());
@@ -65,7 +65,7 @@ public class DeviceBusiness extends BaseBusiness implements IDevice {
     public CommonResponse uploadImageInFirstTime(String deviceId, MultipartFile file, Principal principal) {
         MeterDevice device = baseService.getDeviceService().findById(deviceId);
         if (device == null || device.getImageId() != null)
-            throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
 
         String fileId = null;
 
@@ -76,7 +76,7 @@ public class DeviceBusiness extends BaseBusiness implements IDevice {
         }
 
         if (fileId == null)
-            throw new ErrorCommon(ErrorCode.FILE_UPLOAD_ERROR, Translator.toLocale(ErrorCode.FILE_UPLOAD_ERROR));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.FILE_UPLOAD_ERROR, Translator.toLocale(ErrorCode.FILE_UPLOAD_ERROR));
 
 
         device.setImageId("https://s3.mytel.com.mm/electric/" + fileId);
@@ -89,7 +89,7 @@ public class DeviceBusiness extends BaseBusiness implements IDevice {
     public CommonResponse onViewDeviceDetail(String deviceId) {
         MeterDevice device = baseService.getDeviceService().findById(deviceId);
         if (device == null)
-            throw new ErrorCommon(ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
+            throw new ErrorCommon(UUID.randomUUID().toString(), ErrorCode.DEVICE_INVALID, Translator.toLocale(ErrorCode.DEVICE_INVALID));
         return generateSuccessResponse(UUID.randomUUID().toString(), device);
     }
 

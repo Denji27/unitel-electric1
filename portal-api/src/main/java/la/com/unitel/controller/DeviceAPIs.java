@@ -14,6 +14,7 @@ import java.security.Principal;
  * @since : 4/15/2023, Sat
  **/
 @RequestMapping("device")
+@CrossOrigin
 public interface DeviceAPIs {
 
     @PostMapping

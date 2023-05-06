@@ -15,6 +15,7 @@ import java.time.LocalDate;
  **/
 @RequestMapping("consumption")
 @Validated
+@CrossOrigin
 public interface ConsumptionAPIs {
 
     /*@PostMapping("contract/{contractId}")
