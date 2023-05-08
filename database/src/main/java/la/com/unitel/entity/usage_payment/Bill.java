@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import la.com.unitel.entity.constant.BillStatus;
+import la.com.unitel.entity.constant.PaymentMethod;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,6 +41,10 @@ public class Bill implements Serializable {
     @Enumerated(EnumType.STRING)
     private BillStatus status;
 
+    @Column(nullable = false)
+    private String cashier;
+
+    private PaymentMethod paymentMethod;
     private BigDecimal totalAmount;
     private BigDecimal usageCharge;
     private BigDecimal serviceCharge;
@@ -49,6 +54,12 @@ public class Bill implements Serializable {
     private Integer overDate;
     private String createdBy;
     private String updatedBy;
+    private String paidBy;
+    private String remark;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime paidAt;
 
     @CreationTimestamp
     @JsonSerialize(using = LocalDateTimeSerializer.class)

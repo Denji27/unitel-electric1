@@ -1,6 +1,6 @@
 package la.com.unitel.repository;
 
-import la.com.unitel.entity.account.District;
+import la.com.unitel.entity.edl.District;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

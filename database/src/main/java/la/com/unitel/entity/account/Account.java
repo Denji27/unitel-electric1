@@ -47,6 +47,10 @@ public class Account implements Serializable {
     private String updatedBy;
     private Boolean isActive;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime dateOfBirth;
+
     @CreationTimestamp
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

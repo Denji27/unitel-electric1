@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author : Tungct
@@ -14,32 +15,32 @@ import java.util.List;
  **/
 public interface ContractRepo extends JpaRepository<Contract, String> {
 
-    boolean existsByMeterCode(String meterCode);
+    List<Contract> findByIsActiveTrue();
     boolean existsByName(String contractName);
+    boolean existsByPhoneNumber(String phoneNumber);
 
-    @Query(value = "select c.id as id, c.name as name, a.username as username, a.avatar_id as avatarId, a.phone_number as phoneNumber, a.gender as gender,\n" +
-            "d.name as district, p.name as province, c.contract_type as contractType, c.meter_code as meterCode, \n" +
-            "c.latitude as latitude, c.longitude as longitude, c.is_active as isActive, c.address as address, c.remark as remark, c.created_by as createdBy, " +
-            "c.updated_by as updatedBy, c.created_at as createdAt " +
-            "from contract c , account a , district d , province p \n" +
-            "WHERE c.account_id = a.id and c.district_id = d.id and c.province_id = p.id and :input is NULL or c.name like :input",
-            nativeQuery = true)
+    @Query(value = "select c.id as id, c.name as name, c.avatarId as avatarId, c.phoneNumber as phoneNumber, c.gender as gender,\n" +
+            "d.name as district, p.name as province, c.contractType as contractType, md.id as meterCode, \n" +
+            "c.latitude as latitude, c.longitude as longitude, c.isActive as isActive, c.address as address, c.remark as remark, c.createdBy as createdBy, " +
+            "c.updatedBy as updatedBy, c.createdAt as createdAt " +
+            "from Contract c, District d , Province p, MeterDevice md \n" +
+            "WHERE c.districtId = d.id and c.provinceId = p.id and md.contractId = c.id and :input is NULL or c.name like :input")
     <T> Page<T> searchContractDetail(String input, Class<T> type, Pageable pageable);
 
-    /*countQuery = "select count(*) from contract c , account a , district d , province p " +
-                    "WHERE c.account_id = a.id and c.district_id = d.id and c.province_id = p.id and :input is NULL or c.name like :input",*/
-
-    @Query(value = "select c.id as id, c.name as name, a.username as username, a.avatar_id as avatarId, a.phone_number as phoneNumber, a.gender as gender,\n" +
-            "d.name as district, p.name as province, c.contract_type as contractType, c.meter_code as meterCode, \n" +
-            "c.latitude as latitude, c.longitude as longitude, c.is_active as isActive, c.address as address, c.remark as remark, c.created_by as createdBy, c.updated_by as updatedBy, c.created_at as createdAt\n" +
-            "from contract c , account a , district d , province p \n" +
-            "WHERE c.account_id = a.id and c.district_id = d.id and c.province_id = p.id and c.id = :contractId", nativeQuery = true)
+    @Query(value = "select c.id as id, c.name as name, c.avatarId as avatarId, c.phoneNumber as phoneNumber, c.gender as gender,\n" +
+            "d.name as district, p.name as province, c.contractType as contractType, md.id as meterCode, \n" +
+            "c.latitude as latitude, c.longitude as longitude, c.isActive as isActive, c.address as address, c.remark as remark, c.createdBy as createdBy, c.updatedBy as updatedBy, c.createdAt as createdAt\n" +
+            "from Contract c , District d , Province p, MeterDevice md \n" +
+            "WHERE c.districtId = d.id and c.provinceId = p.id and c.id = :contractId and md.contractId = c.id")
     <T> T findContractDetail(String contractId, Class<T> type);
 
-    @Query(value = "select c.id as id, c.name as name, a.username as username, a.avatar_id as avatarId, a.phone_number as phoneNumber, a.gender as gender,\n" +
-            "d.name as district, p.name as province, c.contract_type as contractType, c.meter_code as meterCode, \n" +
-            "c.latitude as latitude, c.longitude as longitude, c.is_active as isActive, c.address as address, c.remark as remark, c.created_by as createdBy, c.updated_by as updatedBy, c.created_at as createdAt\n" +
-            "from contract c , account a , district d , province p \n" +
-            "WHERE c.account_id = a.id and c.district_id = d.id and c.province_id = p.id and c.id in :contractIdList", nativeQuery = true)
+    @Query(value = "select c.id as id, c.name as name, c.avatarId as avatarId, c.phoneNumber as phoneNumber, c.gender as gender,\n" +
+            "d.name as district, p.name as province, c.contractType as contractType, md.id as meterCode, \n" +
+            "c.latitude as latitude, c.longitude as longitude, c.isActive as isActive, c.address as address, c.remark as remark, c.createdBy as createdBy, c.updatedBy as updatedBy, c.createdAt as createdAt\n" +
+            "from Contract c, District d , Province p, MeterDevice md \n" +
+            "WHERE c.districtId = d.id and c.provinceId = p.id and md.contractId = c.id and c.id in :contractIdList")
     <T> Page<T> findContractDetailByIdIn(List<String> contractIdList, Class<T> type, Pageable pageable);
+
+    @Query("select a.username From Contract c, ReaderContractMap rc, Account a where c.id = rc.id.contractId and rc.role = :role and a.id = rc.id.readerId and c.id = :contractId")
+    Optional<String> findReaderOrCashierByContractId(String contractId, String role);
 }
